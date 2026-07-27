@@ -1,0 +1,577 @@
+/*
+ * Bankist — dark navy & gold theme
+ * Palette: #000814, #001d3d, #003566, #ffc300, #ffd60a
+ */
+
+:root {
+  --c-darkest: #000814;
+  --c-dark: #001d3d;
+  --c-navy: #003566;
+  --c-gold: #ffc300;
+  --c-yellow: #ffd60a;
+
+  --text-soft: #dce6f0; /* readable neutral for body copy on dark cards */
+  --text-muted: #7d93ad; /* secondary/meta text */
+
+  --card-bg: linear-gradient(160deg, var(--c-dark), var(--c-navy));
+
+  /* Reserved for the ONE primary CTA (login) + the balance figure — everything
+     else uses --btn-solid so saturated yellow stays rare, not ambient. */
+  --btn-gradient: linear-gradient(to top left, var(--c-gold), var(--c-yellow));
+  --btn-solid: var(--c-gold);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-soft);
+  /* Single gradient, animated via background-position instead of swapping
+     background-image per keyframe: one definition, compositor-friendly,
+     and there's no risk of a hard cut between mismatched stops. The extra
+     stop of low-opacity gold gives the same brief "warm pass" the old
+     keyframe version had, without needing a second gradient shape. */
+  background-image: radial-gradient(
+    ellipse at top,
+    var(--c-navy) 0%,
+    var(--c-dark) 35%,
+    rgba(255, 195, 0, 0.06) 65%,
+    var(--c-darkest) 100%
+  );
+  background-size: 180% 180%;
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 2rem;
+  animation: bgDrift 32s ease-in-out infinite;
+}
+
+@keyframes bgDrift {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+}
+
+nav {
+  display: grid;
+  /* Equal 1fr side columns guarantee the middle column is truly centered,
+     independent of how wide the welcome text or login form happen to be —
+     unlike flex space-between, which drifts as soon as one side changes. */
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: 'welcome logo login';
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem 2rem;
+}
+
+.welcome {
+  grid-area: welcome;
+  justify-self: start;
+  font-size: clamp(1.5rem, 1.2rem + 0.6vw, 1.9rem);
+  font-weight: 500;
+  color: var(--c-gold);
+}
+
+.logo-wrap {
+  grid-area: logo;
+  justify-self: center;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+}
+
+/* Soft ambient glow behind the mark — lifts brightness locally around the
+   focal brand element without raising luminance across the whole page */
+.logo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -1.6rem;
+  background: radial-gradient(
+    circle,
+    rgba(255, 195, 0, 0.32) 0%,
+    rgba(255, 195, 0, 0) 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  height: clamp(3.2rem, 2.2rem + 2.5vw, 6rem);
+  width: auto;
+  opacity: 0;
+  transform: translateY(4px) scale(0.98);
+  animation: logoIn 0.5s ease-out 0.1s forwards;
+}
+@keyframes logoIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo {
+    animation: none;
+    opacity: 1;
+  }
+}
+.login {
+  grid-area: login;
+  justify-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.login__input {
+  border: none;
+  padding: 0.5rem 2rem;
+  font-size: 1.6rem;
+  font-family: inherit;
+  text-align: center;
+  width: 12rem;
+  border-radius: 10rem;
+  color: var(--c-darkest);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid transparent;
+  transition: all 0.3s;
+}
+
+.login__input:focus {
+  outline: none;
+  border: 1px solid var(--c-gold);
+  background-color: #fff;
+}
+
+.login__input::placeholder {
+  color: #8a8f96;
+}
+
+.login__btn {
+  border: none;
+  background: var(--btn-gradient);
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  color: var(--c-darkest);
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.login__btn:hover,
+.login__btn:focus,
+.btn--sort:hover,
+.btn--sort:focus {
+  outline: none;
+  filter: brightness(1.12);
+}
+
+/* MAIN */
+.app {
+  position: relative;
+  max-width: 100rem;
+  margin: 4rem auto;
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  grid-template-rows: auto repeat(3, 15rem) auto;
+  gap: 2rem;
+
+  /* NOTE This creates the fade in/out anumation */
+  /* opacity: 0; */
+  transition: all 1s;
+}
+
+.balance {
+  grid-column: 1 / span 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.balance__label {
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: -0.2rem;
+  color: var(--c-gold);
+}
+
+.balance__date {
+  font-size: 1.4rem;
+  color: var(--text-muted);
+}
+
+.balance__value {
+  font-size: clamp(2.8rem, 2rem + 3vw, 4.5rem);
+  font-weight: 400;
+  color: var(--c-yellow);
+  text-shadow: 0 0 24px rgba(255, 214, 10, 0.25);
+}
+
+/* MOVEMENTS */
+.movements {
+  grid-row: 2 / span 3;
+  background: var(--card-bg);
+  border-radius: 1rem;
+  overflow: scroll;
+  box-shadow: 0 0.6rem 2rem rgba(0, 8, 20, 0.35);
+}
+
+.movements__row {
+  padding: 2.25rem 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.movements__type {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.1rem 1rem;
+  border-radius: 10rem;
+  margin-right: 2rem;
+}
+
+.movements__date {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.movements__type--deposit {
+  background: var(--btn-solid);
+  color: var(--c-darkest);
+}
+
+.movements__type--withdrawal {
+  background: linear-gradient(to top left, var(--c-navy), var(--c-dark));
+  color: var(--c-yellow);
+  border: 1px solid rgba(255, 214, 10, 0.25);
+}
+
+.movements__value {
+  font-size: 1.7rem;
+  margin-left: auto;
+  color: var(--text-soft);
+}
+
+/* SUMMARY */
+.summary {
+  grid-row: 5 / 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  padding: 0 0.3rem;
+  margin-top: 1rem;
+  row-gap: 0.8rem;
+}
+
+.summary__label {
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-right: 0.8rem;
+  color: var(--text-muted);
+}
+
+.summary__value {
+  font-size: 2.2rem;
+  margin-right: 2.5rem;
+}
+
+.summary__value--in,
+.summary__value--interest {
+  color: var(--c-gold);
+}
+
+.summary__value--out {
+  color: var(--c-gold);
+  opacity: 0.75;
+}
+
+.btn--sort {
+  margin-left: auto;
+  border: none;
+  background: none;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--btn-solid);
+  cursor: pointer;
+}
+
+/* OPERATIONS */
+.operation {
+  border-radius: 1rem;
+  padding: 3rem 4rem;
+  color: var(--text-soft);
+  background: var(--card-bg);
+  border-left: 0.5rem solid var(--c-gold);
+  box-shadow: 0 0.6rem 2rem rgba(0, 8, 20, 0.35);
+}
+
+.operation--transfer {
+  border-left-color: var(--c-gold);
+}
+
+.operation--loan {
+  border-left-color: var(--c-yellow);
+}
+
+.operation--close {
+  border-left-color: var(--c-navy);
+  background: linear-gradient(160deg, var(--c-darkest), var(--c-dark));
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--c-gold);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 2.5fr 2.5fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.4rem 1rem;
+}
+
+/* Exceptions for interst */
+.form.form--loan {
+  grid-template-columns: 2.5fr 1fr 2.5fr;
+}
+.form__label--loan {
+  grid-row: 2;
+}
+/* End exceptions */
+
+.form__input {
+  width: 100%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.12);
+  font-family: inherit;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--text-soft);
+  padding: 0.3rem 1rem;
+  border-radius: 0.7rem;
+  transition: all 0.3s;
+}
+
+.form__input::placeholder {
+  color: var(--text-muted);
+}
+
+.form__input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.form__label {
+  font-size: 1.3rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.form__btn {
+  border: none;
+  border-radius: 0.7rem;
+  font-size: 1.8rem;
+  background: var(--btn-solid);
+  color: var(--c-darkest);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form__btn:hover {
+  filter: brightness(1.1);
+}
+
+.form__btn:focus {
+  outline: none;
+  filter: brightness(1.15);
+}
+
+.logout-timer {
+  padding: 0 0.3rem;
+  margin-top: 1.9rem;
+  text-align: right;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+
+.timer {
+  font-weight: 600;
+  color: var(--c-gold);
+}
+
+/* ============ RESPONSIVE ============ */
+
+/* Tablets / small laptops */
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto repeat(3, 14rem) auto;
+    gap: 1.6rem;
+  }
+
+  .operation {
+    padding: 2.4rem 2.6rem;
+  }
+
+  .movements__row {
+    padding: 1.8rem 2.6rem;
+  }
+}
+
+/* Large phones / narrow tablets: collapse to a single column */
+@media (max-width: 700px) {
+  body {
+    padding: 1.2rem;
+  }
+
+  nav {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'logo'
+      'welcome'
+      'login';
+    row-gap: 1.2rem;
+    padding: 1.2rem 0.5rem;
+    text-align: center;
+  }
+
+  .welcome,
+  .login {
+    justify-self: center;
+  }
+
+  .login {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .login__input {
+    width: 11rem;
+  }
+
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    gap: 1.6rem;
+    margin: 2.5rem auto;
+  }
+
+  .balance {
+    grid-column: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .movements {
+    grid-row: auto;
+    max-height: 40rem;
+  }
+
+  .summary {
+    grid-row: auto;
+  }
+
+  .btn--sort {
+    margin-left: 0;
+    width: 100%;
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+  html {
+    font-size: 56%;
+  }
+
+  body {
+    padding: 0.8rem;
+  }
+
+  .login {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .login__input {
+    width: 100%;
+  }
+
+  .login__btn {
+    align-self: center;
+  }
+
+  .operation {
+    padding: 2rem 1.8rem;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .form.form--loan {
+    grid-template-columns: 1fr;
+  }
+
+  .form__label,
+  .form__label--loan {
+    display: none;
+  }
+
+  .form__btn {
+    padding: 0.8rem;
+  }
+
+  .movements__row {
+    padding: 1.6rem 1.8rem;
+    justify-content: space-between;
+  }
+
+  .movements__value {
+    margin-left: 0;
+  }
+
+  .logout-timer {
+    text-align: center;
+  }
+}
