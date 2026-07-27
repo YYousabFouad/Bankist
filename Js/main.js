@@ -113,42 +113,15 @@ createUserName(accounts);
 console.log(accounts);
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const findMaxValue = movements.reduce((acc, curr = acc + 1) => {
-  return curr > acc ? (acc = curr) : acc;
-});
-
-console.log(findMaxValue);
-
 const ages = [5, 2, 4, 1, 15, 8, 3];
 
-const humanAges = [];
 const calcHumanAges = function (ages) {
-  for (const age of ages) {
-    if (age <= 2) {
-      humanAges.push(age * 2);
-    } else {
-      humanAges.push(16 + age * 4);
-    }
-  }
-  return humanAges;
+  const averageHumanAges =
+    ages
+      .map(age => (age <= 2 ? age * 2 : age * 4 + 16))
+      .filter(age => age > 18)
+      .reduce((acc, age) => acc + age, 0) / ages.length;
+  return averageHumanAges.toFixed(2);
 };
 
-console.log(calcHumanAges([5, 2, 4, 1, 15, 8, 3]));
-
-const excludeHuman = function (humanAges) {
-  const adultHuman = humanAges.filter(humanAges => humanAges > 18);
-  console.log(adultHuman);
-};
-
-excludeHuman(humanAges);
-
-const calcAvg = function (ages) {
-  const adultDog = ages.filter(age => age > 2);
-  const calcAVG = adultDog.reduce((acc, curr) => {
-    return acc + curr;
-  }, 0);
-
-  return calcAVG / ages.length;
-};
-
-console.log(calcAvg(ages));
+console.log(calcHumanAges(ages));
