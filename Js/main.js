@@ -1,5 +1,5 @@
 'use strict';
-
+//Real Project
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
@@ -111,17 +111,29 @@ const createUserName = function (accs) {
 
 createUserName(accounts);
 console.log(accounts);
+
+//Studying
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const ages = [5, 2, 4, 1, 15, 8, 3];
+// const ages = [5, 2, 4, 1, 15, 8, 3];
 
-const calcHumanAges = function (ages) {
-  const averageHumanAges =
-    ages
-      .map(age => (age <= 2 ? age * 2 : age * 4 + 16))
-      .filter(age => age > 18)
-      .reduce((acc, age) => acc + age, 0) / ages.length;
-  return averageHumanAges.toFixed(2);
-};
+// const calcHumanAges = function (ages) {
+//   const averageHumanAges =
+//     ages
+//       .map(age => (age <= 2 ? age * 2 : age * 4 + 16))
+//       .filter(age => age > 18)
+//       .reduce((acc, age) => acc + age, 0) / ages.length;
+//   return averageHumanAges.toFixed(2);
+// };
 
-console.log(calcHumanAges(ages));
+// console.log(calcHumanAges(ages));
+
+console.log(movements.find(mov => mov < 0));
+
+let accJess;
+
+for (const acc of accounts) {
+  if ((acc.owner = 'Jessica Davis')) accJess = acc;
+}
+
+console.log(accJess);
