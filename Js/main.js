@@ -1,5 +1,6 @@
 'use strict';
-//Real Project
+
+// ================= ACCOUNTS DATA =================
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
@@ -30,6 +31,7 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
+// ================= DOM ELEMENTS =================
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -55,11 +57,18 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// COIN HERO DOM ELEMENTS
+const coinHeroEl = document.getElementById('coinHero');
+const coinContainerEl = document.querySelector('.coin-container');
+
+// ================= FUNCTIONS =================
+
+// Render Account Movements
 const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
 
   movements.forEach((mov, i) => {
-    const type = mov > 0 ? 'deposit' : 'withdraw';
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">3 days ago</div>
@@ -69,36 +78,34 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
-const calcDisplayMovements = function (movements) {
+// Calculate and Render Account Balance
+const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, curr) => acc + curr, 0);
   labelBalance.textContent = `${balance} EUR`;
 };
-calcDisplayMovements(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-  const income = movements
+// Calculate and Render Financial Summary
+const calcDisplaySummary = function (currentUser) {
+  const income = currentUser.movements
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0);
-  console.log(income);
-  labelSumIn.textContent = `${income}`;
+  labelSumIn.textContent = `${income}€`;
 
-  const payment = movements
+  const payment = currentUser.movements
     .filter(mov => mov < 0)
     .reduce((acc, curr) => acc + curr, 0);
-  labelSumOut.textContent = `${Math.abs(payment)}`;
+  labelSumOut.textContent = `${Math.abs(payment)}€`;
 
-  const interest = movements
+  const interest = currentUser.movements
     .filter(mov => mov > 0)
-    .map(deposite => (deposite * 1.2) / 100)
-    .reduce((acc, curr) => acc + curr, 0);
+    .map(deposit => (deposit * currentUser.interestRate) / 100)
+    .reduce((acc, curr) => acc + curr, 0)
+    .toFixed(2);
 
-  labelSumInterest.textContent = `${interest}`;
+  labelSumInterest.textContent = `${interest}€`;
 };
 
-calcDisplaySummary(account1.movements);
-
+// Compute Usernames dynamically based on Owner initials
 const createUserName = function (accs) {
   accs.forEach(function (acc) {
     acc.username = acc.owner
@@ -110,10 +117,92 @@ const createUserName = function (accs) {
 };
 
 createUserName(accounts);
-console.log(accounts);
+
+let currentUser;
+
+// ================= EVENT LISTENERS =================
+
+// Authentication / Login Action
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
+
+  if (currentUser?.pin === Number(inputLoginPin.value)) {
+    // 1. Hide the 3D coin bouncing hero area
+    if (coinHeroEl) {
+      coinHeroEl.classList.add('hidden');
+    }
+
+    // 2. Reset login input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    // 3. Render Welcome message
+    labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
+
+    // 4. Populate main UI with account data
+    displayMovements(currentUser.movements);
+    calcDisplaySummary(currentUser);
+    calcDisplayBalance(currentUser.movements);
+
+    // 5. Reveal the main banking dashboard
+    containerApp.style.opacity = 1;
+    containerApp.style.pointerEvents = 'all';
+    containerApp.style.transform = 'translateY(0)';
+  } else {
+    inputLoginPin.value = '';
+    alert('Wrong username or PIN!');
+  }
+});
+
+// ================= 3D COIN BOUNCING PHYSICS =================
+if (coinHeroEl && coinContainerEl) {
+  let posX = 30;
+  let posY = 30;
+  let speedX = 4.5; // Horizontal movement speed
+  let speedY = 3.8; // Vertical movement speed
+
+  function animateBouncingCoin() {
+    // Stop physics calculation if user logged in and coin is hidden
+    if (coinHeroEl.classList.contains('hidden')) return;
+
+    const heroRect = coinHeroEl.getBoundingClientRect();
+    const coinSize = 90; // Pixel size of the coin element
+
+    posX += speedX;
+    posY += speedY;
+
+    // Detect left and right boundary collisions
+    if (posX + coinSize >= heroRect.width || posX <= 0) {
+      speedX *= -1; // Reverse horizontal direction
+    }
+
+    // Detect top and bottom boundary collisions
+    if (posY + coinSize >= heroRect.height || posY <= 0) {
+      speedY *= -1; // Reverse vertical direction
+    }
+
+    // Apply translation to container
+    coinContainerEl.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
+
+    requestAnimationFrame(animateBouncingCoin);
+  }
+
+  // Start animation loop
+  animateBouncingCoin();
+
+  // Handle window resize to prevent coin getting stuck outside boundaries
+  window.addEventListener('resize', () => {
+    const heroRect = coinHeroEl.getBoundingClientRect();
+    if (posX + 90 > heroRect.width) posX = heroRect.width - 90;
+    if (posY + 90 > heroRect.height) posY = heroRect.height - 90;
+  });
+}
+// console.log(Array('1e3').map(n => isFinite(n)));
 
 //Studying
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 // const ages = [5, 2, 4, 1, 15, 8, 3];
 
@@ -128,12 +217,12 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 // console.log(calcHumanAges(ages));
 
-console.log(movements.find(mov => mov < 0));
+// console.log(movements.find(mov => mov < 0));
 
-let accJess;
+// let accJess;
 
-for (const acc of accounts) {
-  if ((acc.owner = 'Jessica Davis')) accJess = acc;
-}
+// for (const acc of accounts) {
+//   if ((acc.owner = 'Jessica Davis')) accJess = acc;
+// }
 
-console.log(accJess);
+// console.log(accJess);
