@@ -193,6 +193,24 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+// Close accounts
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    currentUser.username === inputCloseUsername.value &&
+    currentUser.pin === Number(inputClosePin.value)
+  ) {
+    const currentAccIndex = accounts.findIndex(
+      acc => acc.username === currentUser.username,
+    );
+    accounts.splice(currentAccIndex, 1);
+    containerApp.style.opacity = 0;
+  } else {
+    alert('Enter the Correct Credentials');
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
 // ================= 3D COIN BOUNCING PHYSICS =================
 if (coinHeroEl && coinContainerEl) {
   let posX = 30;
