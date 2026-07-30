@@ -170,7 +170,7 @@ btnTransfer.addEventListener('click', function (e) {
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value,
   );
-  console.log(receiverAcc);
+  inputTransferTo.value = inputTransferAmount.value = '';
   //1.1 - We need to check if the user have an input
   //1.2- We need to check on if amount is positive number
   //2 - We need to check if amount is lower than balance
