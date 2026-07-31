@@ -29,7 +29,7 @@ const account4 = {
   pin: 4444,
 };
 
-const accounts = [account1, account2, account3, account4];
+let accounts = [account1, account2, account3, account4];
 
 // ================= DOM ELEMENTS =================
 const labelWelcome = document.querySelector('.welcome');
@@ -62,6 +62,25 @@ const coinHeroEl = document.getElementById('coinHero');
 const coinContainerEl = document.querySelector('.coin-container');
 
 // ================= FUNCTIONS =================
+//save in local storage
+const saveAccounts = function (data) {
+  localStorage.setItem('accounts', JSON.stringify(data));
+};
+//Load the saved data
+const loadAccounts = function () {
+  return JSON.parse(localStorage.getItem('accounts'));
+};
+//to check if there's a saved data and use
+const intializeAccounts = function () {
+  let data = loadAccounts();
+  if (data) {
+    accounts = data;
+  } else {
+    saveAccounts(accounts);
+  }
+};
+
+intializeAccounts();
 
 // Render Account Movements
 const displayMovements = function (movements) {
@@ -76,13 +95,6 @@ const displayMovements = function (movements) {
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
-};
-//save in local storage
-const saveAccounts = function (data) {
-  localStorage.setItem('accounts', JSON.stringify(data));
-};
-const loadAccounts = function () {
-  return JSON.parse(localStorage.getItem('accounts'));
 };
 
 // Calculate and Render Account Balance
@@ -123,6 +135,7 @@ const createUserName = function (accs) {
 };
 
 createUserName(accounts);
+saveAccounts(accounts);
 
 const updateUI = function (acc) {
   calcDisplayBalance(acc);
@@ -192,8 +205,8 @@ btnTransfer.addEventListener('click', function (e) {
     //3 - if 2 is true add a negative movement and update UI
     currentUser.movements.push(-amount);
     receiverAcc.movements.push(amount);
-    updateUI(currentUser);
     saveAccounts(accounts);
+    updateUI(currentUser);
     inputTransferTo.value = inputTransferAmount.value = '';
   }
 });
@@ -208,11 +221,11 @@ btnClose.addEventListener('click', function (e) {
       acc => acc.username === currentUser.username,
     );
     accounts.splice(currentAccIndex, 1);
+    saveAccounts(accounts);
     currentUser = '';
   } else {
     alert('Enter the Correct Credentials');
   }
-  saveAccounts(accounts);
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
