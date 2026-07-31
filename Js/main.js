@@ -77,6 +77,13 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
+//save in local storage
+const saveAccounts = function (data) {
+  localStorage.setItem('accounts', JSON.stringify(data));
+};
+const loadAccounts = function () {
+  return JSON.parse(localStorage.getItem('accounts'));
+};
 
 // Calculate and Render Account Balance
 const calcDisplayBalance = function (acc) {
@@ -86,23 +93,22 @@ const calcDisplayBalance = function (acc) {
 
 // Calculate and Render Financial Summary
 const calcDisplaySummary = function (acc) {
-  const income = acc.movements
+  acc.income = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0);
-  labelSumIn.textContent = `${income}€`;
+  labelSumIn.textContent = `${acc.income}€`;
 
-  const payment = acc.movements
+  acc.payment = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, curr) => acc + curr, 0);
-  labelSumOut.textContent = `${Math.abs(payment)}€`;
+  labelSumOut.textContent = `${Math.abs(acc.payment)}€`;
 
-  const interest = acc.movements
+  acc.interest = acc.movements
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
-
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${acc.interest}€`;
 };
 
 // Compute Usernames dynamically based on Owner initials
@@ -148,9 +154,7 @@ btnLogin.addEventListener('click', function (e) {
     labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
 
     // 4. Populate main UI with account data
-    displayMovements(currentUser.movements);
-    calcDisplaySummary(currentUser);
-    calcDisplayBalance(currentUser);
+    updateUI(currentUser);
 
     // 5. Reveal the main banking dashboard
     containerApp.style.opacity = 1;
@@ -170,7 +174,6 @@ btnTransfer.addEventListener('click', function (e) {
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value,
   );
-  inputTransferTo.value = inputTransferAmount.value = '';
   //1.1 - We need to check if the user have an input
   //1.2- We need to check on if amount is positive number
   //2 - We need to check if amount is lower than balance
@@ -183,19 +186,20 @@ btnTransfer.addEventListener('click', function (e) {
     alert(
       `${currentUser.owner.split(' ')[0]} , You add the Wrong data !! \nTry Again `,
     );
-  } else if (amount <= 0 || Number(labelBalance.value) < amount) {
+  } else if (amount <= 0 || currentUser.balance < amount) {
     alert('Please Enter the correct amount please');
-  } else if (receiverAcc && Array(amount).map(i => typeof i === 'number')) {
+  } else if (receiverAcc) {
     //3 - if 2 is true add a negative movement and update UI
     currentUser.movements.push(-amount);
     receiverAcc.movements.push(amount);
     updateUI(currentUser);
+    saveAccounts(accounts);
+    inputTransferTo.value = inputTransferAmount.value = '';
   }
 });
 
 // Close accounts
 btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
   if (
     currentUser.username === inputCloseUsername.value &&
     currentUser.pin === Number(inputClosePin.value)
@@ -204,10 +208,11 @@ btnClose.addEventListener('click', function (e) {
       acc => acc.username === currentUser.username,
     );
     accounts.splice(currentAccIndex, 1);
-    containerApp.style.opacity = 0;
+    currentUser = '';
   } else {
     alert('Enter the Correct Credentials');
   }
+  saveAccounts(accounts);
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
