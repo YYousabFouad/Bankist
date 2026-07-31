@@ -71,7 +71,7 @@ const loadAccounts = function () {
   return JSON.parse(localStorage.getItem('accounts'));
 };
 //to check if there's a saved data and use
-const intializeAccounts = function () {
+const initializeAccounts = function () {
   let data = loadAccounts();
   if (data) {
     accounts = data;
@@ -80,7 +80,7 @@ const intializeAccounts = function () {
   }
 };
 
-intializeAccounts();
+initializeAccounts();
 
 // Render Account Movements
 const displayMovements = function (movements) {
