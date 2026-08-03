@@ -62,15 +62,17 @@ const coinHeroEl = document.getElementById('coinHero');
 const coinContainerEl = document.querySelector('.coin-container');
 
 // ================= FUNCTIONS =================
-//save in local storage
+// Save in local storage
 const saveAccounts = function (data) {
   localStorage.setItem('accounts', JSON.stringify(data));
 };
-//Load the saved data
+
+// Load the saved data
 const loadAccounts = function () {
   return JSON.parse(localStorage.getItem('accounts'));
 };
-//to check if there's a saved data and use
+
+// Check if there's saved data and initialize
 const initializeAccounts = function () {
   let data = loadAccounts();
   if (data) {
@@ -180,16 +182,13 @@ btnLogin.addEventListener('click', function (e) {
 });
 
 // Implement Transfers
-
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value,
   );
-  //1.1 - We need to check if the user have an input
-  //1.2- We need to check on if amount is positive number
-  //2 - We need to check if amount is lower than balance
+
   if (
     !inputTransferTo.value ||
     !receiverAcc ||
@@ -197,12 +196,11 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc.username === currentUser.username
   ) {
     alert(
-      `${currentUser.owner.split(' ')[0]} , You add the Wrong data !! \nTry Again `,
+      `${currentUser.owner.split(' ')[0]}, You entered wrong data !! \nTry Again `,
     );
   } else if (amount <= 0 || currentUser.balance < amount) {
-    alert('Please Enter the correct amount please');
+    alert('Please enter a correct amount');
   } else if (receiverAcc) {
-    //3 - if 2 is true add a negative movement and update UI
     currentUser.movements.push(-amount);
     receiverAcc.movements.push(amount);
     saveAccounts(accounts);
@@ -211,20 +209,23 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
-//Loan amounts
-
+// Loan amounts
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputLoanAmount.value);
-  if (amount > 0 && currentUser.movements.some(mov => mov < amount * 0.1)) {
+  if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
     currentUser.movements.push(amount);
+    saveAccounts(accounts);
     updateUI(currentUser);
+  } else {
+    alert('Loan request denied.');
   }
   inputLoanAmount.value = '';
 });
 
 // Close accounts
 btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
   if (
     currentUser.username === inputCloseUsername.value &&
     currentUser.pin === Number(inputClosePin.value)
@@ -234,58 +235,53 @@ btnClose.addEventListener('click', function (e) {
     );
     accounts.splice(currentAccIndex, 1);
     saveAccounts(accounts);
-    currentUser = '';
+
+    // Reset UI view back to default
+    containerApp.style.opacity = 0;
+    containerApp.style.pointerEvents = 'none';
+    if (coinHeroEl) coinHeroEl.classList.remove('hidden');
+    labelWelcome.textContent = 'Log in to get started';
+    currentUser = null;
   } else {
     alert('Enter the Correct Credentials');
   }
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
-// ================= 3D COIN BOUNCING PHYSICS =================
-if (coinHeroEl && coinContainerEl) {
-  let posX = 30;
-  let posY = 30;
-  let speedX = 4.5; // Horizontal movement speed
-  let speedY = 3.8; // Vertical movement speed
+// Bouncing Coin Animation
+const coin = document.getElementById('bouncing-coin');
 
-  function animateBouncingCoin() {
-    // Stop physics calculation if user logged in and coin is hidden
-    if (coinHeroEl.classList.contains('hidden')) return;
+if (coin) {
+  let x = Math.random() * (window.innerWidth - 60);
+  let y = Math.random() * (window.innerHeight - 60);
+  let dx = 3;
+  let dy = 3;
+  const coinSize = 60;
 
-    const heroRect = coinHeroEl.getBoundingClientRect();
-    const coinSize = 90; // Pixel size of the coin element
+  function animateCoin() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
 
-    posX += speedX;
-    posY += speedY;
-
-    // Detect left and right boundary collisions
-    if (posX + coinSize >= heroRect.width || posX <= 0) {
-      speedX *= -1; // Reverse horizontal direction
+    if (x + dx > screenWidth - coinSize || x + dx < 0) {
+      dx = -dx;
     }
 
-    // Detect top and bottom boundary collisions
-    if (posY + coinSize >= heroRect.height || posY <= 0) {
-      speedY *= -1; // Reverse vertical direction
+    if (y + dy > screenHeight - coinSize || y + dy < 0) {
+      dy = -dy;
     }
 
-    // Apply translation to container
-    coinContainerEl.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
+    x += dx;
+    y += dy;
 
-    requestAnimationFrame(animateBouncingCoin);
+    coin.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+    requestAnimationFrame(animateCoin);
   }
 
-  // Start animation loop
-  animateBouncingCoin();
+  animateCoin();
 
-  // Handle window resize to prevent coin getting stuck outside boundaries
   window.addEventListener('resize', () => {
-    const heroRect = coinHeroEl.getBoundingClientRect();
-    if (posX + 90 > heroRect.width) posX = heroRect.width - 90;
-    if (posY + 90 > heroRect.height) posY = heroRect.height - 90;
+    if (x > window.innerWidth - coinSize) x = window.innerWidth - coinSize;
+    if (y > window.innerHeight - coinSize) y = window.innerHeight - coinSize;
   });
 }
-
-// Studying;
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-console.log(movements);

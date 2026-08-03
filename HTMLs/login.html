@@ -23,9 +23,20 @@
     <!-- TOP NAVIGATION BAR -->
     <nav>
       <p class="welcome">Log in to get started</p>
-      <span class="logo-wrap">
-        <img src="../Images/emblem-light.svg" alt="Logo" class="logo" />
-      </span>
+    </nav>
+
+    <!-- BOUNCING 3D COIN HERO SECTION (BEFORE LOGIN) -->
+    <div class="coin-hero" id="coinHero">
+      <div class="coin-container">
+        <div class="coin">
+          <div class="coin-face coin-front">$</div>
+          <div class="coin-face coin-back">₿</div>
+        </div>
+      </div>
+      <p class="coin-caption">
+        Enter your credentials above to access your account
+      </p>
+
       <form class="login">
         <input
           type="text"
@@ -40,19 +51,6 @@
         />
         <button class="login__btn">&rarr;</button>
       </form>
-    </nav>
-
-    <!-- BOUNCING 3D COIN HERO SECTION (BEFORE LOGIN) -->
-    <div class="coin-hero" id="coinHero">
-      <div class="coin-container">
-        <div class="coin">
-          <div class="coin-face coin-front">$</div>
-          <div class="coin-face coin-back">₿</div>
-        </div>
-      </div>
-      <p class="coin-caption">
-        Enter your credentials above to access your account
-      </p>
     </div>
 
     <!-- MAIN APPLICATION CONTAINER (HIDDEN INITIALLY) -->

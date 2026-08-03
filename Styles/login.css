@@ -1,23 +1,23 @@
 /*
- * Bankist — Dark Navy & Fluid Gold Theme
- * Palette: #000814, #001d3d, #003566, #ffc300, #ffd60a
+ * Bankist — Ocean Blue & Vibrant Teal Theme
+ * Matched strictly to provided HTML structure and class names
  */
 
 :root {
-  --c-darkest: #000814;
-  --c-dark: #001d3d;
-  --c-navy: #003566;
-  --c-gold: #ffc300;
-  --c-yellow: #ffd60a;
+  --c-dark-blue: #003262;
+  --c-mid-blue: #005a9e;
+  --c-light-blue: #0084c7;
+  --c-teal: #00c9a7;
+  --c-teal-hover: #00e6be;
 
-  --text-soft: #e2eafc;
-  --text-muted: #8da9c4;
+  --card-bg: rgba(220, 248, 250, 0.88);
+  --card-text-title: #0e3746;
+  --card-text-body: #466a77;
 
-  --glass-bg: rgba(0, 29, 61, 0.45);
-  --glass-border: rgba(255, 195, 0, 0.15);
+  --text-white: #ffffff;
+  --text-soft-blue: #79b7d8;
 
-  --btn-gradient: linear-gradient(135deg, var(--c-gold), var(--c-yellow));
-  --btn-solid: var(--c-gold);
+  --btn-gradient: linear-gradient(90deg, #00c9a7 0%, #00d2c4 100%);
 }
 
 * {
@@ -33,12 +33,14 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  color: var(--text-soft);
-  background-color: var(--c-darkest);
+  color: var(--text-white);
+  background: linear-gradient(135deg, #004d80 0%, #00264d 100%);
   min-height: 100vh;
   padding: 2rem;
   position: relative;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Ambient Fluid Background Orbs */
@@ -47,201 +49,143 @@ body::after {
   content: '';
   position: fixed;
   border-radius: 50%;
-  filter: blur(90px);
-  z-index: -1;
+  filter: blur(80px);
+  z-index: 0;
   pointer-events: none;
-  opacity: 0.6;
-  animation: floatMesh 20s ease-in-out infinite alternate;
+  opacity: 0.5;
+  animation: floatOrb 12s infinite alternate ease-in-out;
 }
 
 body::before {
-  width: 50vw;
-  height: 50vw;
-  top: -10vw;
-  left: -10vw;
-  background: radial-gradient(
-    circle,
-    rgba(0, 53, 102, 0.8) 0%,
-    rgba(255, 195, 0, 0.12) 80%,
-    transparent 100%
-  );
+  width: 500px;
+  height: 500px;
+  background: rgba(0, 206, 209, 0.25);
+  bottom: -100px;
+  left: -100px;
 }
 
 body::after {
-  width: 45vw;
-  height: 45vw;
-  bottom: -10vw;
-  right: -10vw;
-  background: radial-gradient(
-    circle,
-    rgba(255, 195, 0, 0.2) 0%,
-    rgba(0, 29, 61, 0.9) 70%,
-    transparent 100%
-  );
-  animation-delay: -10s;
+  width: 650px;
+  height: 650px;
+  background: rgba(0, 150, 214, 0.25);
+  top: -50px;
+  right: -150px;
+  animation-duration: 15s;
+  animation-direction: alternate-reverse;
 }
 
-@keyframes floatMesh {
+@keyframes floatOrb {
   0% {
-    transform: translate(0, 0) scale(1) rotate(0deg);
+    transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(8vw, 12vh) scale(1.15) rotate(180deg);
+    transform: translate(30px, 40px) scale(1.08);
   }
   100% {
-    transform: translate(-5vw, 5vh) scale(0.95) rotate(360deg);
+    transform: translate(-20px, 20px) scale(0.95);
   }
 }
 
-/* NAVIGATION (Top Bar Header) */
+/* NAVIGATION HEADER */
 nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-areas: 'welcome logo login';
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem 2.5rem;
-  background: rgba(
-    0,
-    29,
-    61,
-    0.75
-  ); /* Darker glass background for better contrast */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 195, 0, 0.3); /* Sharper gold border */
-  border-radius: 1.6rem;
-  box-shadow:
-    0 10px 40px rgba(0, 8, 20, 0.6),
-    0 0 20px rgba(255, 195, 0, 0.1);
-  position: relative;
-  z-index: 10;
-}
-
-/* Welcome Text & Project Title */
-.welcome {
-  grid-area: welcome;
-  justify-self: start;
-  font-size: clamp(1.6rem, 1.2rem + 0.6vw, 2rem);
-  font-weight: 600;
-  color: var(--c-yellow); /* Vivid gold color */
-  text-shadow: 0 2px 10px rgba(255, 214, 10, 0.3); /* Subtle outer glow for high legibility */
-  letter-spacing: 0.5px;
-}
-
-/* Logo Wrapper & Glow Effect */
-.logo-wrap {
-  grid-area: logo;
-  justify-self: center;
-  position: relative;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 1.2rem;
-}
-
-/* Outer Aura / Glow with Electric Cyan & Gold Gradient for Maximum Contrast */
-.logo-wrap::before {
-  content: '';
-  position: absolute;
-  inset: -0.8rem;
-  background: radial-gradient(
-    circle,
-    rgba(0, 180, 216, 0.5) 0%,
-    /* Vivid electric cyan for high contrast against dark navy */
-    rgba(255, 195, 0, 0.2) 50%,
-    /* Smooth transition to warm gold */ transparent 80%
-  );
-  z-index: 0;
-  pointer-events: none;
-  filter: blur(8px);
-}
-
-.logo {
+  gap: 2rem;
+  padding: 2.5rem 4rem;
   position: relative;
-  z-index: 1;
-  height: clamp(3.6rem, 2.5rem + 2.5vw, 6.5rem);
-  width: auto;
-  /* Dual Layer Drop-Shadow: Cyan for crisp contrast + Gold for rich ambient lighting */
-  filter: drop-shadow(0 0 10px rgba(0, 180, 216, 0.8))
-    drop-shadow(0 0 20px rgba(255, 195, 0, 0.4)) brightness(1.15);
-  transition:
-    transform 0.3s ease,
-    filter 0.3s ease;
+  z-index: 10;
+  animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.logo:hover {
-  transform: scale(1.05);
-  filter: drop-shadow(0 0 15px rgba(0, 180, 216, 1))
-    drop-shadow(0 0 25px rgba(255, 195, 0, 0.6)) brightness(1.25);
+.welcome {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--text-white);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
+
 .login {
-  grid-area: login;
-  justify-self: end;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
 }
 
 .login__input {
-  border: 1px solid rgba(255, 195, 0, 0.2);
-  padding: 0.6rem 1.6rem;
-  font-size: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 1.2rem 2.4rem;
+  font-size: 1.8rem;
   font-family: inherit;
   text-align: center;
-  width: 12rem;
-  border-radius: 10rem;
-  color: var(--text-soft);
-  background-color: rgba(0, 8, 20, 0.6);
-  backdrop-filter: blur(4px);
+  width: 22rem;
+  border-radius: 3rem;
+  color: var(--text-white);
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .login__input:focus {
   outline: none;
-  border-color: var(--c-gold);
-  background-color: rgba(0, 29, 61, 0.8);
-  box-shadow: 0 0 12px rgba(255, 195, 0, 0.25);
+  border-color: var(--c-teal);
+  background-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 201, 167, 0.5);
 }
 
 .login__input::placeholder {
-  color: var(--text-muted);
+  color: var(--text-soft-blue);
 }
 
 .login__btn {
   border: none;
   background: var(--btn-gradient);
-  width: 3.8rem;
-  height: 3.8rem;
-  border-radius: 50%;
+  padding: 1.2rem 3.5rem;
+  border-radius: 3rem;
   font-size: 1.8rem;
-  color: var(--c-darkest);
+  font-weight: 700;
+  color: #003846;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 4px 18px rgba(0, 201, 167, 0.35);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 22rem;
 }
 
 .login__btn:hover,
 .login__btn:focus {
   outline: none;
+  background: linear-gradient(90deg, #00e6be 0%, #00f2fe 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 195, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 201, 167, 0.6);
 }
 
 /* BOUNCING 3D COIN HERO SECTION */
 .coin-hero {
   position: relative;
   width: 100%;
-  height: calc(100vh - 140px);
-  overflow: hidden;
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  max-width: 1000px;
+  margin: 4rem auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .coin-hero.hidden {
@@ -251,19 +195,16 @@ nav {
 }
 
 .coin-container {
-  position: absolute;
-  top: 0;
-  left: 0;
   perspective: 1000px;
-  will-change: transform;
+  margin-bottom: 2.5rem;
 }
 
 .coin {
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
   position: relative;
   transform-style: preserve-3d;
-  animation: flipCoin 2.5s linear infinite;
+  animation: flipCoin 3s linear infinite;
 }
 
 .coin-face {
@@ -273,12 +214,12 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3.8rem;
-  font-weight: 600;
-  color: var(--c-darkest);
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #003846;
   background: var(--btn-gradient);
-  border: 4px solid var(--c-yellow);
-  box-shadow: 0 0 30px rgba(255, 195, 0, 0.4);
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 35px rgba(0, 201, 167, 0.5);
   backface-visibility: hidden;
 }
 
@@ -296,31 +237,31 @@ nav {
 }
 
 .coin-caption {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.4rem;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-  pointer-events: none;
+  font-size: 3.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-white);
+  max-width: 750px;
+  margin: 0 auto;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* MAIN APPLICATION CONTAINER */
 .app {
   position: relative;
-  max-width: 100rem;
-  margin: 4rem auto;
+  max-width: 1100px;
+  margin: 3rem auto;
   display: grid;
   grid-template-columns: 4fr 3fr;
   grid-template-rows: auto repeat(3, 15rem) auto;
-  gap: 2rem;
+  gap: 2.5rem;
   opacity: 0;
   pointer-events: none;
   transition:
     opacity 0.8s ease,
     transform 0.8s ease;
   transform: translateY(20px);
+  z-index: 5;
 }
 
 .balance {
@@ -330,107 +271,104 @@ nav {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
+  padding: 1rem 0;
 }
 
 .balance__label {
-  font-size: 2.2rem;
-  font-weight: 500;
-  color: var(--c-gold);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--text-white);
 }
 
 .balance__date {
   font-size: 1.4rem;
-  color: var(--text-muted);
+  color: var(--text-soft-blue);
 }
 
 .balance__value {
-  font-size: clamp(2.8rem, 2rem + 3vw, 4.5rem);
-  font-weight: 500;
-  color: var(--c-yellow);
-  text-shadow: 0 0 20px rgba(255, 214, 10, 0.3);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--c-teal);
+  text-shadow: 0 0 20px rgba(0, 201, 167, 0.3);
 }
 
+/* MOVEMENTS TABLE & CARDS */
 .movements {
   grid-row: 2 / span 3;
-  background: var(--glass-bg);
+  background: var(--card-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 2rem;
   overflow-y: auto;
-  box-shadow: 0 8px 32px 0 rgba(0, 8, 20, 0.37);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .movements__row {
   padding: 2.25rem 3rem;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .movements__type {
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  font-weight: 600;
-  padding: 0.3rem 1.2rem;
-  border-radius: 10rem;
-  margin-right: 1.5rem;
-}
-
-.movements__date {
   font-size: 1.2rem;
   text-transform: uppercase;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 700;
+  padding: 0.4rem 1.4rem;
+  border-radius: 10rem;
+  margin-right: 1.8rem;
 }
 
 .movements__type--deposit {
   background: var(--btn-gradient);
-  color: var(--c-darkest);
+  color: #003846;
 }
 
 .movements__type--withdrawal {
-  background: rgba(0, 53, 102, 0.6);
-  color: var(--c-yellow);
-  border: 1px solid rgba(255, 214, 10, 0.3);
+  background: #ff6b6b;
+  color: #ffffff;
+}
+
+.movements__date {
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--card-text-body);
 }
 
 .movements__value {
-  font-size: 1.8rem;
-  font-weight: 500;
+  font-size: 1.9rem;
+  font-weight: 600;
   margin-left: auto;
-  color: var(--text-soft);
+  color: var(--card-text-title);
 }
 
+/* ACCOUNT SUMMARY SECTION */
 .summary {
   grid-row: 5 / 6;
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  padding: 0.5rem;
-  row-gap: 0.8rem;
+  padding: 1rem 0;
 }
 
 .summary__label {
   font-size: 1.2rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   margin-right: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-soft-blue);
 }
 
 .summary__value {
   font-size: 2.2rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-right: 2.5rem;
 }
 
 .summary__value--in,
 .summary__value--interest {
-  color: var(--c-gold);
+  color: var(--c-teal);
 }
 
 .summary__value--out {
@@ -442,38 +380,31 @@ nav {
   border: none;
   background: none;
   font-size: 1.3rem;
-  font-weight: 500;
-  color: var(--c-gold);
+  font-weight: 600;
+  color: var(--c-teal);
   cursor: pointer;
 }
 
+/* OPERATIONS CARDS */
 .operation {
-  border-radius: 1.6rem;
+  border-radius: 2rem;
   padding: 2.5rem 3rem;
-  color: var(--text-soft);
-  background: var(--glass-bg);
+  background: var(--card-bg);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-left: 0.4rem solid var(--c-gold);
-  box-shadow: 0 8px 32px 0 rgba(0, 8, 20, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
 }
 
-.operation--transfer {
-  border-left-color: var(--c-gold);
-}
-.operation--loan {
-  border-left-color: var(--c-yellow);
-}
-.operation--close {
-  border-left-color: #ff6b6b;
+.operation:hover {
+  transform: translateY(-4px);
 }
 
 h2 {
   margin-bottom: 1.5rem;
-  font-size: 1.7rem;
-  font-weight: 600;
-  color: var(--c-gold);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--card-text-title);
 }
 
 .form {
@@ -486,36 +417,39 @@ h2 {
 .form.form--loan {
   grid-template-columns: 2.5fr 1fr 2.5fr;
 }
+
 .form__label--loan {
   grid-row: 2;
 }
 
 .form__input {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: rgba(0, 8, 20, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.7);
   font-family: inherit;
   font-size: 1.5rem;
   text-align: center;
-  color: var(--text-soft);
-  padding: 0.5rem 1rem;
+  color: var(--card-text-title);
+  padding: 0.6rem 1rem;
   border-radius: 0.8rem;
   transition: all 0.3s;
 }
 
 .form__input::placeholder {
-  color: var(--text-muted);
+  color: var(--card-text-body);
 }
+
 .form__input:focus {
   outline: none;
-  background-color: rgba(0, 29, 61, 0.7);
-  border-color: var(--c-gold);
+  background-color: #ffffff;
+  border-color: var(--c-teal);
 }
 
 .form__label {
   font-size: 1.2rem;
   text-align: center;
-  color: var(--text-muted);
+  color: var(--card-text-body);
+  font-weight: 500;
 }
 
 .form__btn {
@@ -523,26 +457,57 @@ h2 {
   border-radius: 0.8rem;
   font-size: 1.8rem;
   background: var(--btn-gradient);
-  color: var(--c-darkest);
+  color: #003846;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.form__btn:hover {
+  background: linear-gradient(90deg, #00e6be 0%, #00f2fe 100%);
 }
 
 .logout-timer {
   padding: 0 0.3rem;
   margin-top: 1.9rem;
   text-align: right;
-  font-size: 1.25rem;
-  color: var(--text-muted);
+  font-size: 1.3rem;
+  color: var(--text-soft-blue);
 }
 
 .timer {
   font-weight: 600;
-  color: var(--c-gold);
+  color: var(--c-teal);
 }
 
-/* MEDIA QUERIES FOR RESPONSIVENESS */
+/* KEYFRAME ANIMATIONS */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE BREAKPOINTS */
 @media (max-width: 900px) {
+  .coin-caption {
+    font-size: 2.8rem;
+  }
+
   .app {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto repeat(3, 14rem) auto;
@@ -551,20 +516,24 @@ h2 {
 
 @media (max-width: 700px) {
   nav {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'logo' 'welcome' 'login';
-    row-gap: 1.2rem;
-    text-align: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
   }
 
-  .welcome,
   .login {
-    justify-self: center;
+    align-items: center;
   }
+
+  .coin-caption {
+    font-size: 2.2rem;
+  }
+
   .app {
     grid-template-columns: 1fr;
     grid-template-rows: none;
   }
+
   .movements {
     grid-row: auto;
     max-height: 40rem;
