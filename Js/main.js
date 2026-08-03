@@ -211,6 +211,18 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+//Loan amounts
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentUser.movements.some(mov => mov < amount * 0.1)) {
+    currentUser.movements.push(amount);
+    updateUI();
+  }
+  inputLoanAmount.value = '';
+});
+
 // Close accounts
 btnClose.addEventListener('click', function (e) {
   if (
@@ -272,30 +284,8 @@ if (coinHeroEl && coinContainerEl) {
     if (posY + 90 > heroRect.height) posY = heroRect.height - 90;
   });
 }
-// console.log(Array('1e3').map(n => isFinite(n)));
 
-//Studying
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// Studying;
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-// const ages = [5, 2, 4, 1, 15, 8, 3];
-
-// const calcHumanAges = function (ages) {
-//   const averageHumanAges =
-//     ages
-//       .map(age => (age <= 2 ? age * 2 : age * 4 + 16))
-//       .filter(age => age > 18)
-//       .reduce((acc, age) => acc + age, 0) / ages.length;
-//   return averageHumanAges.toFixed(2);
-// };
-
-// console.log(calcHumanAges(ages));
-
-// console.log(movements.find(mov => mov < 0));
-
-// let accJess;
-
-// for (const acc of accounts) {
-//   if ((acc.owner = 'Jessica Davis')) accJess = acc;
-// }
-
-// console.log(accJess);
+console.log(movements);
