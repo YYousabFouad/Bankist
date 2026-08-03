@@ -218,7 +218,7 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Number(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some(mov => mov < amount * 0.1)) {
     currentUser.movements.push(amount);
-    updateUI();
+    updateUI(currentUser);
   }
   inputLoanAmount.value = '';
 });
