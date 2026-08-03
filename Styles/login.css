@@ -100,12 +100,12 @@ nav {
 }
 
 .welcome {
-  font-size: 2.2rem;
+  font-size: 2.7rem;
   font-weight: 700;
   letter-spacing: 1.2px;
   color: var(--text-white);
   text-transform: uppercase;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
