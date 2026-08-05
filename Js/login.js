@@ -168,7 +168,7 @@ btnLogin.addEventListener('click', function (e) {
 
   currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
 
-  if (currentUser?.pin === Number(inputLoginPin.value)) {
+  if (currentUser?.pin === +inputLoginPin.value) {
     // 1. Hide the 3D coin bouncing hero area
     if (coinHeroEl) {
       coinHeroEl.classList.add('hidden');
@@ -197,7 +197,7 @@ btnLogin.addEventListener('click', function (e) {
 // Implement Transfers
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value,
   );
@@ -225,7 +225,7 @@ btnTransfer.addEventListener('click', function (e) {
 // Loan amounts
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputLoanAmount.value);
+  const amount = +inputLoanAmount.value;
   if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
     currentUser.movements.push(amount);
     saveAccounts(accounts);
@@ -241,7 +241,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
     currentUser.username === inputCloseUsername.value &&
-    currentUser.pin === Number(inputClosePin.value)
+    currentUser.pin === +inputClosePin.value
   ) {
     const currentAccIndex = accounts.findIndex(
       acc => acc.username === currentUser.username,
@@ -306,3 +306,9 @@ if (coin) {
     if (y > window.innerHeight - coinSize) y = window.innerHeight - coinSize;
   });
 }
+
+//====================Studying================================================
+
+// console.log(3 / 10);
+
+// console.log(0.1 + 0.2);
