@@ -106,7 +106,7 @@ const displayMovements = function (movements, sort) {
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">3 days ago</div>
-          <div class="movements__value">${mov}€</div>
+          <div class="movements__value">${mov.toFixed(2)}€</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -115,19 +115,21 @@ const displayMovements = function (movements, sort) {
 // Calculate and Render Account Balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, curr) => acc + curr, 0);
-  labelBalance.textContent = `${acc.balance} EUR`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)} EUR`;
 };
 
 // Calculate and Render Financial Summary
 const calcDisplaySummary = function (acc) {
   acc.income = acc.movements
     .filter(mov => mov > 0)
-    .reduce((acc, curr) => acc + curr, 0);
+    .reduce((acc, curr) => acc + curr, 0)
+    .toFixed(2);
   labelSumIn.textContent = `${acc.income}€`;
 
   acc.payment = acc.movements
     .filter(mov => mov < 0)
-    .reduce((acc, curr) => acc + curr, 0);
+    .reduce((acc, curr) => acc + curr, 0)
+    .toFixed(2);
   labelSumOut.textContent = `${Math.abs(acc.payment)}€`;
 
   acc.interest = acc.movements
@@ -225,7 +227,7 @@ btnTransfer.addEventListener('click', function (e) {
 // Loan amounts
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = +inputLoanAmount.value;
+  const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
     currentUser.movements.push(amount);
     saveAccounts(accounts);
