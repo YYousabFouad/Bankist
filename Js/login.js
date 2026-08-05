@@ -3,9 +3,22 @@
 // ================= ACCOUNTS DATA =================
 const account1 = {
   owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
+
+  movementsDates: [
+    '2019-11-18T21:31:17.178Z',
+    '2019-12-23T07:42:02.383Z',
+    '2020-01-28T09:15:04.904Z',
+    '2020-04-01T10:17:24.185Z',
+    '2020-05-08T14:11:59.604Z',
+    '2020-05-27T17:01:17.194Z',
+    '2020-07-11T23:36:17.929Z',
+    '2020-07-12T10:51:36.790Z',
+  ],
+  currency: 'EUR',
+  locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -13,23 +26,22 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
+
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2020-04-10T14:43:26.374Z',
+    '2020-06-25T18:49:59.371Z',
+    '2020-07-26T12:01:20.894Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
-const account3 = {
-  owner: 'Steven Thomas Williams',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-};
-
-const account4 = {
-  owner: 'Sarah Smith',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-};
-
-let accounts = [account1, account2, account3, account4];
+let accounts = [account1, account2];
 
 // ================= DOM ELEMENTS =================
 const labelWelcome = document.querySelector('.welcome');
@@ -294,84 +306,3 @@ if (coin) {
     if (y > window.innerHeight - coinSize) y = window.innerHeight - coinSize;
   });
 }
-
-//===============================Studying======================================
-
-/*
-This time, Julia and Kate are studying the activity levels of different dog breeds.
-
-YOUR TASKS:
-1. Store the the average weight of a "Husky" in a variable "huskyWeight"
-2. Find the name of the only breed that likes both "running" and "fetch" ("dogBothActivities" variable)
-3. Create an array "allActivities" of all the activities of all the dog breeds
-4. Create an array "uniqueActivities" that contains only the unique activities (no activity repetitions). HINT: Use a technique with a special data structure that we studied a few sections ago.
-5. Many dog breeds like to swim. What other activities do these dogs like? Store all the OTHER activities these breeds like to do, in a unique array called "swimmingAdjacent".
-6. Do all the breeds have an average weight of 10kg or more? Log to the console whether "true" or "false".
-7. Are there any breeds that are "active"? "Active" means that the dog has 3 or more activities. Log to the console whether "true" or "false".
-
-BONUS: What's the average weight of the heaviest breed that likes to fetch? HINT: Use the "Math.max" method along with the ... operator.
-
-TEST DATA:
-*/
-
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-// movements.sort((a, b) => b - a);
-// console.log(movements);
-// const breeds = [
-//   {
-//     breed: 'German Shepherd',
-//     averageWeight: 32,
-//     activities: ['fetch', 'swimming'],
-//   },
-//   {
-//     breed: 'Dalmatian',
-//     averageWeight: 24,
-//     activities: ['running', 'fetch', 'agility'],
-//   },
-//   {
-//     breed: 'Labrador',
-//     averageWeight: 28,
-//     activities: ['swimming', 'fetch'],
-//   },
-//   {
-//     breed: 'Beagle',
-//     averageWeight: 12,
-//     activities: ['digging', 'fetch'],
-//   },
-//   {
-//     breed: 'Husky',
-//     averageWeight: 26,
-//     activities: ['running', 'agility', 'swimming'],
-//   },
-//   {
-//     breed: 'Bulldog',
-//     averageWeight: 36,
-//     activities: ['sleeping'],
-//   },
-//   {
-//     breed: 'Poodle',
-//     averageWeight: 18,
-//     activities: ['agility', 'fetch'],
-//   },
-// ];
-// //1
-// const huskyWeight = breeds.find(bread => bread.breed === 'Husky').averageWeight;
-
-// console.log(huskyWeight);
-
-// //2
-// const dogBothActivities = breeds.find(bread =>
-//   bread.activities.includes('fetch' && 'running'),
-// ).breed;
-// console.log(dogBothActivities);
-
-// //3
-// const allActivities = breeds.flatMap(bread => bread.activities);
-// console.log(allActivities);
-
-// //4
-// const uniqueActivities = [...new Set(allActivities)];
-// console.log(uniqueActivities);
-
-// console.log(movements);
