@@ -218,8 +218,31 @@ const updateUI = function (acc) {
   displayMovements(acc);
   calcDisplaySummary(acc);
 };
+//Implement Count Down
+const countDownTimer = function () {
+  //define the funciton
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, '0');
+    const sec = String(time % 60).padStart(2, '0');
+    //display it every 1 second
+    labelTimer.textContent = `${min}:${sec}`;
 
-let currentUser;
+    //check if reaches 0
+    if (time === 0) {
+      clearInterval(timer);
+      window.location.reload();
+    }
+
+    //decrease the time
+    time--;
+  };
+  //define the time that i want the userr to logout automatically after it
+  let time = 60 * 3;
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+let currentUser, timer;
 
 // ================= EVENT LISTENERS =================
 
@@ -262,11 +285,14 @@ btnLogin.addEventListener('click', function (e) {
 
     // 4. Render Welcome message
     labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
+    // 5. Render Time
+    if (timer) clearInterval(timer);
+    timer = countDownTimer();
 
-    // 5. Populate main UI with account data
+    // 6. Populate main UI with account data
     updateUI(currentUser);
 
-    // 6. Reveal the main banking dashboard
+    // 7. Reveal the main banking dashboard
     containerApp.style.opacity = 1;
     containerApp.style.pointerEvents = 'all';
     containerApp.style.transform = 'translateY(0)';
@@ -296,16 +322,21 @@ btnTransfer.addEventListener('click', function (e) {
   } else if (amount <= 0 || currentUser.balance < amount) {
     alert('Please enter a correct amount');
   } else if (receiverAcc) {
-    currentUser.movements.push(-amount);
-    receiverAcc.movements.push(amount);
-    //add date to the movement
-    currentUser.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-    //update ui
-    updateUI(currentUser);
-    //save the data
-    saveAccounts(accounts);
-    inputTransferTo.value = inputTransferAmount.value = '';
+    setTimeout(() => {
+      currentUser.movements.push(-amount);
+      receiverAcc.movements.push(amount);
+      //add date to the movement
+      currentUser.movementsDates.push(new Date().toISOString());
+      receiverAcc.movementsDates.push(new Date().toISOString());
+      //update ui
+      updateUI(currentUser);
+      //save the data
+      saveAccounts(accounts);
+      inputTransferTo.value = inputTransferAmount.value = '';
+      //reset timer
+      clearInterval(timer);
+      timer = countDownTimer();
+    }, 2000);
   }
 });
 
@@ -314,13 +345,18 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
-    currentUser.movements.push(amount);
-    // add loan date
-    currentUser.movementsDates.push(new Date().toISOString());
-    //save the movements dates to the account
-    saveAccounts(accounts);
-    //update UI
-    updateUI(currentUser);
+    setTimeout(() => {
+      currentUser.movements.push(amount);
+      // add loan date
+      currentUser.movementsDates.push(new Date().toISOString());
+      //save the movements dates to the account
+      saveAccounts(accounts);
+      //update UI
+      updateUI(currentUser);
+      //reset timer
+      clearInterval(timer);
+      timer = countDownTimer();
+    }, 2000);
   } else {
     alert('Loan request denied.');
   }
@@ -340,11 +376,7 @@ btnClose.addEventListener('click', function (e) {
     accounts.splice(currentAccIndex, 1);
     saveAccounts(accounts);
 
-    // Reset UI view back to default
-    containerApp.style.opacity = 0;
-    containerApp.style.pointerEvents = 'none';
-    if (coinHeroEl) coinHeroEl.classList.remove('hidden');
-    labelWelcome.textContent = 'Log in to get started';
+    window.location.replace('../HTMLs/index.html');
     currentUser = null;
   } else {
     alert('Enter the Correct Credentials');
