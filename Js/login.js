@@ -91,6 +91,14 @@ const formatDate = function (date, locale) {
   }
 };
 
+//Format the currency
+const formattedCurrency = function (locale, currency, value) {
+  return Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 // Save in local storage
 const saveAccounts = function (data) {
   localStorage.setItem('accounts', JSON.stringify(data));
@@ -135,11 +143,11 @@ const displayMovements = function (acc, sort) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(movementDate);
     const displayDate = formatDate(date, currentUser.locale);
-
+    const formattedMov = formattedCurrency(acc.locale, acc.currency, movement);
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${movement.toFixed(2)}€</div>
+          <div class="movements__value">${formattedMov}</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -149,7 +157,11 @@ const displayMovements = function (acc, sort) {
 // Calculate and Render Account Balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, curr) => acc + curr, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} EUR`;
+  labelBalance.textContent = formattedCurrency(
+    acc.locale,
+    acc.currency,
+    acc.balance,
+  );
 };
 
 // Calculate and Render Financial Summary
@@ -158,22 +170,35 @@ const calcDisplaySummary = function (acc) {
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
-  labelSumIn.textContent = `${acc.income}€`;
-
+  labelSumIn.textContent = formattedCurrency(
+    acc.locale,
+    acc.currency,
+    acc.income,
+  );
+  console.log(acc.payment);
+  console.log(typeof acc.payment);
   acc.payment = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
-  labelSumOut.textContent = `${Math.abs(acc.payment)}€`;
+
+  labelSumOut.textContent = formattedCurrency(
+    acc.locale,
+    acc.currency,
+    Math.abs(+acc.payment),
+  );
 
   acc.interest = acc.movements
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .reduce((acc, curr) => acc + curr, 0)
     .toFixed(2);
-  labelSumInterest.textContent = `${acc.interest}€`;
+  labelSumInterest.textContent = formattedCurrency(
+    acc.locale,
+    acc.currency,
+    acc.interest,
+  );
 };
-
 // Compute Usernames dynamically based on Owner initials
 const createUserName = function (accs) {
   accs.forEach(function (acc) {
