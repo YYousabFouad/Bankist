@@ -75,7 +75,7 @@ const coinContainerEl = document.querySelector('.coin-container');
 
 // ================= FUNCTIONS =================
 //Format the Date
-const formatDate = function (date) {
+const formatDate = function (date, locale) {
   const calcDaysPassed = (day1, day2) =>
     Math.round(Math.abs(day2 - day1) / (1000 * 60 * 60 * 24));
   const daysPassed = calcDaysPassed(new Date(), date);
@@ -83,10 +83,11 @@ const formatDate = function (date) {
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
   else {
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    return `${day}/${month}/${year}`;
+    // const year = date.getFullYear();
+    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    // const day = `${date.getDate()}`.padStart(2, 0);
+    // return `${day}/${month}/${year}`;
+    return Intl.DateTimeFormat(locale).format(date);
   }
 };
 
@@ -133,7 +134,7 @@ const displayMovements = function (acc, sort) {
     const { movement, movementDate } = obj;
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(movementDate);
-    const displayDate = formatDate(date);
+    const displayDate = formatDate(date, currentUser.locale);
 
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
@@ -212,12 +213,24 @@ btnLogin.addEventListener('click', function (e) {
     //2. save the current date
 
     const now = new Date();
-    const year = now.getFullYear();
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const minutes = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year},${hour}:${minutes}`;
+    const options = {
+      year: 'numeric',
+      // Weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    };
+    // const locale = navigator.language;
+    // const year = now.getFullYear();
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const minutes = `${now.getMinutes()}`.padStart(2, 0);
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentUser.locale,
+      options,
+    ).format(now);
     // 3. Reset login input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
