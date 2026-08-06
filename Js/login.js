@@ -12,7 +12,7 @@ const account1 = {
     '2019-12-23T07:42:02.383Z',
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
-    '2020-05-08T14:11:59.604Z',
+    '2024-05-08T14:11:59.604Z',
     '2020-05-27T17:01:17.194Z',
     '2020-07-11T23:36:17.929Z',
     '2020-07-12T10:51:36.790Z',
@@ -99,20 +99,32 @@ initializeAccounts();
 // Render Account Movements
 const displayMovements = function (acc, sort) {
   containerMovements.innerHTML = '';
-  const movs = sort
-    ? acc.movements.slice().sort((a, b) => a - b)
-    : acc.movements;
-  movs.forEach((mov, i) => {
-    const date = new Date(acc.movementsDates[i]);
+
+  const combinedDatemov = acc.movements.map((mov, i) => ({
+    movement: mov,
+    movementDate: acc.movementsDates.at(i),
+  }));
+
+  if (sort)
+    combinedDatemov.sort(
+      (a, b) =>
+        new Date(a.movementDate).getTime() - new Date(b.movementDate).getTime(),
+    );
+  // const movs = sort
+  //   ? acc.movements.slice().sort((a, b) => a - b)
+  //   : acc.movements;
+  combinedDatemov.forEach((obj, i) => {
+    const { movement, movementDate } = obj;
+    const date = new Date(movementDate);
     const year = date.getFullYear();
     const month = `${date.getMonth() + 1}`.padStart(2, 0);
     const day = `${date.getDate()}`.padStart(2, 0);
     const displayDate = `${day}/${month}/${year}`;
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    const type = movement > 0 ? 'deposit' : 'withdrawal';
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${mov.toFixed(2)}€</div>
+          <div class="movements__value">${movement.toFixed(2)}€</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
