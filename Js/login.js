@@ -175,8 +175,6 @@ const calcDisplaySummary = function (acc) {
     acc.currency,
     acc.income,
   );
-  console.log(acc.payment);
-  console.log(typeof acc.payment);
   acc.payment = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, curr) => acc + curr, 0)
@@ -429,11 +427,3 @@ if (coin) {
     if (y > window.innerHeight - coinSize) y = window.innerHeight - coinSize;
   });
 }
-
-//====================Studying================================================
-
-// console.log(3 / 10);
-
-// console.log(0.1 + 0.2);
-
-console.log(new Date());
