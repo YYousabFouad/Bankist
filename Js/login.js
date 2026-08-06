@@ -74,6 +74,22 @@ const coinHeroEl = document.getElementById('coinHero');
 const coinContainerEl = document.querySelector('.coin-container');
 
 // ================= FUNCTIONS =================
+//Format the Date
+const formatDate = function (date) {
+  const calcDaysPassed = (day1, day2) =>
+    Math.round(Math.abs(day2 - day1) / (1000 * 60 * 60 * 24));
+  const daysPassed = calcDaysPassed(new Date(), date);
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+  else {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    return `${day}/${month}/${year}`;
+  }
+};
+
 // Save in local storage
 const saveAccounts = function (data) {
   localStorage.setItem('accounts', JSON.stringify(data));
@@ -115,12 +131,10 @@ const displayMovements = function (acc, sort) {
   //   : acc.movements;
   combinedDatemov.forEach((obj, i) => {
     const { movement, movementDate } = obj;
-    const date = new Date(movementDate);
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const displayDate = `${day}/${month}/${year}`;
     const type = movement > 0 ? 'deposit' : 'withdrawal';
+    const date = new Date(movementDate);
+    const displayDate = formatDate(date);
+
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
