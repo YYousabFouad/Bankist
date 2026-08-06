@@ -247,8 +247,8 @@ btnTransfer.addEventListener('click', function (e) {
     currentUser.movements.push(-amount);
     receiverAcc.movements.push(amount);
     //add date to the movement
-    currentUser.movementsDates.push(new Date());
-    receiverAcc.movementsDates.push(new Date());
+    currentUser.movementsDates.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
     //update ui
     updateUI(currentUser);
     //save the data
