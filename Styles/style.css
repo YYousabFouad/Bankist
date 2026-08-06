@@ -149,6 +149,74 @@ body {
   color: #718096;
   line-height: 1.6;
 }
+/* Features Showcase Section */
+.features-section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.showcase-card {
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 14px;
+  padding: 2.25rem 1.75rem;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  position: relative;
+}
+
+.showcase-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e0;
+}
+
+.showcase-icon {
+  width: 54px;
+  height: 54px;
+  background-color: #f0fdf4;
+  color: #0d9488;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.showcase-card:hover .showcase-icon {
+  background-color: #0d9488;
+  color: #ffffff;
+}
+
+.showcase-card h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.75rem;
+}
+
+.showcase-card p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #718096;
+  line-height: 1.6;
+  margin: 0;
+}
 /* Security Section Styling */
 .security-section {
   padding: 5rem 2rem;
