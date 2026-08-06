@@ -97,19 +97,26 @@ const initializeAccounts = function () {
 initializeAccounts();
 
 // Render Account Movements
-const displayMovements = function (movements, sort) {
+const displayMovements = function (acc, sort) {
   containerMovements.innerHTML = '';
-
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
   movs.forEach((mov, i) => {
+    const date = new Date(acc.movementsDates[i]);
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const displayDate = `${day}/${month}/${year}`;
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-          <div class="movements__date">3 days ago</div>
+          <div class="movements__date">${displayDate}</div>
           <div class="movements__value">${mov.toFixed(2)}€</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
+  saveAccounts(accounts);
 };
 
 // Calculate and Render Account Balance
@@ -156,7 +163,7 @@ saveAccounts(accounts);
 
 const updateUI = function (acc) {
   calcDisplayBalance(acc);
-  displayMovements(acc.movements);
+  displayMovements(acc);
   calcDisplaySummary(acc);
 };
 
@@ -176,17 +183,26 @@ btnLogin.addEventListener('click', function (e) {
       coinHeroEl.classList.add('hidden');
     }
 
-    // 2. Reset login input fields
+    //2. save the current date
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    const day = `${now.getDate()}`.padStart(2, 0);
+    const hour = `${now.getHours()}`.padStart(2, 0);
+    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+    labelDate.textContent = `${day}/${month}/${year},${hour}:${minutes}`;
+    // 3. Reset login input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
-    // 3. Render Welcome message
+    // 4. Render Welcome message
     labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
 
-    // 4. Populate main UI with account data
+    // 5. Populate main UI with account data
     updateUI(currentUser);
 
-    // 5. Reveal the main banking dashboard
+    // 6. Reveal the main banking dashboard
     containerApp.style.opacity = 1;
     containerApp.style.pointerEvents = 'all';
     containerApp.style.transform = 'translateY(0)';
@@ -218,8 +234,13 @@ btnTransfer.addEventListener('click', function (e) {
   } else if (receiverAcc) {
     currentUser.movements.push(-amount);
     receiverAcc.movements.push(amount);
-    saveAccounts(accounts);
+    //add date to the movement
+    currentUser.movementsDates.push(new Date());
+    receiverAcc.movementsDates.push(new Date());
+    //update ui
     updateUI(currentUser);
+    //save the data
+    saveAccounts(accounts);
     inputTransferTo.value = inputTransferAmount.value = '';
   }
 });
@@ -230,7 +251,11 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
     currentUser.movements.push(amount);
+    // add loan date
+    currentUser.movementsDates.push(new Date().toISOString());
+    //save the movements dates to the account
     saveAccounts(accounts);
+    //update UI
     updateUI(currentUser);
   } else {
     alert('Loan request denied.');
@@ -267,7 +292,7 @@ btnClose.addEventListener('click', function (e) {
 let sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
-  displayMovements(currentUser.movements, !sorted);
+  displayMovements(currentUser, !sorted);
   sorted = !sorted;
 });
 
@@ -314,3 +339,5 @@ if (coin) {
 // console.log(3 / 10);
 
 // console.log(0.1 + 0.2);
+
+console.log(new Date());
