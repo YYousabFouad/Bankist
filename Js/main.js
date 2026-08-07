@@ -1,7 +1,12 @@
 'use strict';
+//Buttons
 const backToTopBtn = document.getElementById('backToTopBtn');
 const energyRing = document.getElementById('energyRing');
-
+const btnSumbit = document.querySelector('.form-submit-btn');
+//Form Inputs
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const messageInput = document.getElementById('message');
 // Circumference of a circle with r=20 is 2 * PI * 20 ≈ 125.66
 const radius = 20;
 const circumference = 2 * Math.PI * radius;
@@ -41,3 +46,21 @@ backToTopBtn.addEventListener('click', () => {
 
 // Listen to scroll events
 window.addEventListener('scroll', updateScrollProgress);
+//================Form===================
+
+const nameCheckRegex = /\d/;
+const emailCheckRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+btnSumbit.addEventListener('click', function (e) {
+  //prevent the page from reload when sumbit
+  e.preventDefault();
+  //Validate the form in contact section
+  if (!emailInput.value || !nameInput.value || !messageInput.value) {
+    alert('Enter Your Information please');
+  } else if (nameCheckRegex.test(nameInput.value)) {
+    alert('please Enter the name correctly');
+  } else if (!emailCheckRegex.test(emailInput.value.trim())) {
+    alert('Enter your email correctly');
+  } else {
+    alert(`ok ${nameInput.value.split(' ')[0]} we gonna solve your problem`);
+  }
+});
