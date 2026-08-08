@@ -65,6 +65,13 @@ const initializeAccounts = function () {
 
 initializeAccounts();
 
+const username = document.querySelector('#username');
+function creatUserName(firstName, lastName) {
+  const firstnamelower = firstName.toLowerCase()[0];
+  const lastnamelower = lastName.toLowerCase()[0];
+  username.value = `${firstnamelower + lastnamelower}`;
+}
+
 //============================step1============================
 //get form inputs and buttons
 const firstNameInput = document.querySelector('.form-input-firstName');
@@ -137,8 +144,9 @@ sumbitButton.addEventListener('click', function (e) {
         .classList.remove('hidden');
       document.querySelector('.step1').classList.remove('step-active');
       document.querySelector('.step2').classList.add('step-active');
+      //==================Step2==================================
+
+      creatUserName(firstNameInput.value, lastNameInput.value);
     }
   }
 });
-
-//==================Step2==================================
