@@ -65,6 +65,7 @@ const initializeAccounts = function () {
 
 initializeAccounts();
 
+//============================step1============================
 //get form inputs and buttons
 const firstNameInput = document.querySelector('.form-input-firstName');
 const lastNameInput = document.querySelector('.form-input-lastName');
@@ -88,7 +89,7 @@ sumbitButton.addEventListener('click', function (e) {
     !emailInput.value ||
     !birthYearInput.value ||
     !idNumberInput.value ||
-    !idCardInput.value ||
+    idCardInput.files.length === 0 ||
     !checkBoxInput.checked
   ) {
     alert('Enter the correct Information');
@@ -101,28 +102,43 @@ sumbitButton.addEventListener('click', function (e) {
     alert('Enter your email correctly');
   } else if (user21Years > today) {
     alert(
-      `Your need to be 21 at least \n You have to wait ${user21Years.getTime() - today.getTime()}`,
+      `Your need to be 21 at least \n You have to wait ${Math.trunc(((user21Years.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 365.25)) * 12)}Months`,
     );
-  } else if (idCardInput.files.length === 2) {
-    if (
-      idCardInput.files[0].type !== 'image/png' ||
-      idCardInput.files[1].type !== 'image/png'
-    ) {
-      alert('You need to add an image please with an extension png');
-    }
-  } else if (idCardInput.files.length === 1) {
-    if (idCardInput.files[0].type !== 'application/pdf') {
-      alert('you have to add a pdf file');
-    }
-  } else if (idCardInput.files.length > 2) {
-    alert('The Applicant just need 2 files no more');
   } else {
-    alert(
-      `Ok ${firstNameInput.value} we gonna navigate you to account setup section `,
-    );
-    document.querySelector('.form-card-first-one').classList.add('hidden');
-    document.querySelector('.form-card-second-one').classList.remove('hidden');
-    document.querySelector('.step1').classList.remove('step-active');
-    document.querySelector('.step2').classList.add('step-active');
+    // Validate file types first
+    let filesValid = true;
+
+    if (idCardInput.files.length === 1) {
+      if (idCardInput.files[0].type !== 'application/pdf') {
+        alert('you have to add a pdf file');
+        filesValid = false;
+      }
+    } else if (idCardInput.files.length === 2) {
+      if (
+        idCardInput.files[0].type !== 'image/png' ||
+        idCardInput.files[1].type !== 'image/png'
+      ) {
+        alert('You need to add an image please with an extension png');
+        filesValid = false;
+      }
+    } else {
+      alert('The Applicant just needs 1 PDF or 2 PNG files, no more');
+      filesValid = false;
+    }
+
+    // Only navigate if everything actually passed
+    if (filesValid) {
+      alert(
+        `Ok ${firstNameInput.value} we gonna navigate you to account setup section `,
+      );
+      document.querySelector('.form-card-first-one').classList.add('hidden');
+      document
+        .querySelector('.form-card-second-one')
+        .classList.remove('hidden');
+      document.querySelector('.step1').classList.remove('step-active');
+      document.querySelector('.step2').classList.add('step-active');
+    }
   }
 });
+
+//==================Step2==================================
