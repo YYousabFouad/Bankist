@@ -209,15 +209,18 @@ body {
 /* Horizontal Stepper Component */
 .stepper {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   margin-top: var(--spacing-stack-lg);
 }
 
-.step {
+.step1,
+.step2 {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 8px;
 }
 
@@ -254,6 +257,7 @@ body {
   width: 32px;
   height: 2px;
   background-color: var(--color-outline-variant);
+  margin-top: 13px;
 }
 
 @media (max-width: 500px) {
@@ -262,6 +266,7 @@ body {
   }
   .step-divider {
     width: 20px;
+    margin-top: 13px;
   }
 }
 
@@ -275,6 +280,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 40px;
   box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
 }
 
 @media (max-width: 600px) {
@@ -329,7 +335,7 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 16px; /* 16px Vertical padding for premium feel */
+  padding: 16px;
   font-family: var(--font-family-base);
   font-size: 16px;
   color: var(--color-on-surface);
@@ -484,6 +490,84 @@ body {
 }
 
 /* ==========================================================================
+   Account Setup & PIN Input Component
+   ========================================================================== */
+/* Username Read-Only Input */
+.username-display-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.readonly-input {
+  background-color: var(--color-surface-container-low);
+  color: var(--color-on-surface-variant);
+  font-weight: 600;
+  cursor: not-allowed;
+  padding-right: 90px;
+}
+
+.badge-assigned {
+  position: absolute;
+  right: 12px;
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 4-Digit PIN Styling */
+.text-muted {
+  color: var(--color-on-surface-variant);
+  margin-bottom: 12px;
+}
+
+.pin-container {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
+.pin-digit {
+  width: 56px;
+  height: 56px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-family-base);
+  color: var(--color-on-surface);
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pin-digit:focus {
+  border-color: var(--color-secondary);
+  box-shadow: var(--shadow-focus);
+}
+
+@media (max-width: 400px) {
+  .pin-container {
+    gap: 8px;
+  }
+
+  .pin-digit {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+/* ==========================================================================
    Security Badge Footer Component
    ========================================================================== */
 
@@ -500,4 +584,58 @@ body {
 
 .lock-icon {
   color: var(--color-secondary);
+}
+
+/* ==========================================================================
+   Session Timer Component
+   ========================================================================== */
+
+.session-timer-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1.25rem auto 2rem;
+  padding: 0.65rem 1.25rem;
+  width: max-content;
+  max-width: 100%;
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 50px;
+  color: var(--color-on-surface-variant);
+  font-size: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.session-timer-card .timer-icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-secondary);
+}
+
+.timer-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timer-label {
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+.timer-countdown {
+  font-weight: 700;
+  font-family: var(--font-family-base);
+  color: var(--color-secondary);
+  background-color: var(--color-surface-container-low);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-outline-variant);
+  letter-spacing: 0.5px;
+}
+
+.hidden {
+  display: none;
 }

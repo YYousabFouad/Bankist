@@ -42,31 +42,21 @@
         </p>
 
         <div class="stepper">
-          <div class="step step-active">
+          <div class="step1 step-active">
             <div class="step-badge">1</div>
             <span class="step-label">Personal & ID Info</span>
           </div>
           <div class="step-divider"></div>
-          <div class="step">
+          <div class="step2">
             <div class="step-badge">2</div>
             <span class="step-label">Account Setup</span>
-          </div>
-          <div class="step-divider"></div>
-          <div class="step">
-            <div class="step-badge">3</div>
-            <span class="step-label">Verification</span>
           </div>
         </div>
       </section>
 
-      <!-- Form Card Container -->
-      <div class="form-card">
-        <form
-          action="#"
-          method="POST"
-          enctype="multipart/form-data"
-          class="account-form"
-        >
+      <!-- Step 1: Personal & ID Info Form Card -->
+      <div class="form-card form-card-first-one">
+        <form class="account-form">
           <!-- Section 1: Personal Details -->
           <section class="form-section">
             <h2 class="headline-md">Personal Information</h2>
@@ -83,9 +73,8 @@
                   type="text"
                   id="firstName"
                   name="firstName"
-                  class="form-input"
+                  class="form-input form-input-firstName"
                   placeholder="e.g. Alexander"
-                  required
                 />
               </div>
 
@@ -96,9 +85,8 @@
                   type="text"
                   id="lastName"
                   name="lastName"
-                  class="form-input"
+                  class="form-input form-input-lastName"
                   placeholder="e.g. Morgan"
-                  required
                 />
               </div>
             </div>
@@ -111,9 +99,8 @@
                   type="email"
                   id="email"
                   name="email"
-                  class="form-input"
+                  class="form-input form-input-email"
                   placeholder="name@example.com"
-                  required
                 />
                 <span class="field-helper"
                   >Used for account notifications and multi-factor
@@ -128,11 +115,10 @@
                   type="date"
                   id="birthdate"
                   name="birthdate"
-                  class="form-input"
-                  required
+                  class="form-input form-input-birthdate"
                 />
                 <span class="field-helper"
-                  >Applicants must be at least 18 years old.</span
+                  >Applicants must be at least 21 years old.</span
                 >
               </div>
             </div>
@@ -157,9 +143,8 @@
                 type="text"
                 id="nationalId"
                 name="nationalId"
-                class="form-input"
+                class="form-input form-input-IdNumber"
                 placeholder="Enter your 14-digit National ID"
-                pattern="[0-9]+"
               />
             </div>
 
@@ -174,7 +159,7 @@
                   id="idCard"
                   name="idCard"
                   class="file-input"
-                  accept="image/*,.pdf"
+                  multiple
                 />
                 <div class="upload-content">
                   <div class="upload-icon-container">
@@ -209,7 +194,6 @@
               type="checkbox"
               id="terms"
               name="terms"
-              required
               class="custom-checkbox"
             />
             <label for="terms" class="body-sm">
@@ -227,6 +211,103 @@
             </button>
             <button type="button" class="btn btn-secondary">
               Save for Later
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Account Setup Form Card -->
+      <div class="form-card form-card-second-one hidden">
+        <form action="../HTMLs/login.html" method="POST" class="account-form">
+          <!-- Section: Account Setup -->
+          <section class="form-section">
+            <h2 class="headline-md">Account Setup</h2>
+            <p class="section-desc body-sm">
+              Review your system-assigned username and create a 4-digit PIN for
+              quick access.
+            </p>
+
+            <!-- Assigned Username (Read-Only) -->
+            <div class="input-field">
+              <label for="username" class="field-label">Your Username</label>
+              <div class="username-display-wrapper">
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form-input readonly-input"
+                  value="yosab_fouad_2026"
+                  readonly
+                />
+                <span class="badge-assigned">Assigned</span>
+              </div>
+              <span class="field-helper">
+                This is your unique account identifier generated based on your
+                registration details.
+              </span>
+            </div>
+
+            <hr class="section-divider" />
+
+            <!-- 4-Digit Security PIN Section -->
+            <div class="input-field">
+              <label class="field-label">Set 4-Digit Security PIN</label>
+              <p class="body-sm text-muted">
+                Choose a 4-digit PIN for fast authentication and mobile access.
+              </p>
+
+              <!-- 4 Separate Input Boxes for PIN -->
+              <div class="pin-container">
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="pin-digit"
+                  pattern="[0-9]"
+                  inputmode="numeric"
+                  required
+                  aria-label="PIN Digit 1"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="pin-digit"
+                  pattern="[0-9]"
+                  inputmode="numeric"
+                  required
+                  aria-label="PIN Digit 2"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="pin-digit"
+                  pattern="[0-9]"
+                  inputmode="numeric"
+                  required
+                  aria-label="PIN Digit 3"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="pin-digit"
+                  pattern="[0-9]"
+                  inputmode="numeric"
+                  required
+                  aria-label="PIN Digit 4"
+                />
+              </div>
+              <span class="field-helper"
+                >Do not share your PIN with anyone.</span
+              >
+            </div>
+          </section>
+
+          <!-- Form Action Buttons -->
+          <div class="action-group">
+            <button type="submit" class="btn btn-primary">
+              Complete Account Setup
+            </button>
+            <button type="button" class="btn btn-secondary">
+              Back to Personal Info
             </button>
           </div>
         </form>
@@ -270,5 +351,6 @@
         </div>
       </div>
     </main>
+    <script type="module" src="../Js/create.js"></script>
   </body>
 </html>
