@@ -5,6 +5,7 @@ const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
+  username: 'js',
   pin: 1111,
 
   movementsDates: [
@@ -26,7 +27,7 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
-
+  username: 'jd',
   movementsDates: [
     '2019-11-01T13:15:33.035Z',
     '2019-11-30T09:48:16.867Z',
@@ -64,12 +65,21 @@ const initializeAccounts = function () {
 };
 
 initializeAccounts();
+function generateNumber() {
+  return Math.trunc(Math.random() * 9000) + 1000;
+}
 
-const username = document.querySelector('#username');
+const generatedNumbers = [];
 function creatUserName(firstName, lastName) {
+  const userName = document.querySelector('#username');
   const firstnamelower = firstName.toLowerCase()[0];
   const lastnamelower = lastName.toLowerCase()[0];
-  username.value = `${firstnamelower + lastnamelower}`;
+  let generatedNumber = generateNumber();
+  while (generatedNumbers.includes(generatedNumber)) {
+    generatedNumber = generateNumber();
+  }
+  generatedNumbers.push(generatedNumber);
+  userName.value = `${firstnamelower + lastnamelower + generatedNumber}`;
 }
 
 //============================step1============================
