@@ -1,50 +1,5 @@
 'use strict';
-// ================= ACCOUNTS DATA =================
-
-const account1 = {
-  owner: 'Test User',
-  email: 'test@test.com',
-  birthDate: '2000-01-01',
-  idNumber: '12345678901234',
-  movements: [],
-  username: 'tu1234',
-  pin: 1234,
-  movementsDates: [],
-};
-
-const account2 = {
-  owner: 'Demo User',
-  email: 'demo@demo.com',
-  birthDate: '2000-02-02',
-  idNumber: '98765432109876',
-  movements: [],
-  username: 'du5678',
-  pin: 5678,
-  movementsDates: [],
-};
-export let accounts = [account1, account2];
-
-// Save in local storage
-export const saveAccounts = function (data) {
-  localStorage.setItem('accounts', JSON.stringify(data));
-};
-
-// Load the saved data
-export const loadAccounts = function () {
-  return JSON.parse(localStorage.getItem('accounts'));
-};
-
-// Check if there's saved data and initialize
-const initializeAccounts = function () {
-  let data = loadAccounts();
-  if (data) {
-    accounts = data;
-  } else {
-    saveAccounts(accounts);
-  }
-};
-
-initializeAccounts();
+import { accounts, saveAccounts } from '../Js/account.js';
 function generateNumber() {
   return Math.trunc(Math.random() * 9000) + 1000;
 }
@@ -168,10 +123,13 @@ sumbitBtn.addEventListener('click', function (e) {
       email: `${emailInput.value}`,
       birthDate: `${birthYearInput.value}`,
       idNumber: `${idNumberInput.value}`,
-      movements: [],
+      movements: [2000],
       username: `${userName.value}`,
-      pin: pinDigits.join(),
-      movementsDates: [],
+      pin: Number(pinDigits.join('')),
+      movementsDates: [new Date().toISOString()],
+      interestRate: 1.2,
+      currency: 'EGP',
+      locale: 'en-EG',
     };
     accounts.push(newAccount);
     saveAccounts(accounts);

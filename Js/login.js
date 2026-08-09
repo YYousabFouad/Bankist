@@ -1,5 +1,5 @@
 'use strict';
-import { saveAccounts, loadAccounts, accounts } from '../Js/create';
+import { saveAccounts, accounts } from '../Js/account.js';
 // ================= DOM ELEMENTS =================
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
