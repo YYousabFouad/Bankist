@@ -162,3 +162,14 @@ sumbitButton.addEventListener('click', function (e) {
     }
   }
 });
+
+//==============Back to Personal info===========================
+
+const backBtn = document.querySelector('.btn-secondary');
+backBtn.addEventListener('click', function (e) {
+  e.preventDefault();
+  document.querySelector('.form-card-first-one').classList.remove('hidden');
+  document.querySelector('.form-card-second-one').classList.add('hidden');
+  document.querySelector('.step1').classList.add('step-active');
+  document.querySelector('.step2').classList.remove('step-active');
+});
