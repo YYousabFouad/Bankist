@@ -117,6 +117,8 @@ sumbitButton.addEventListener('click', function (e) {
     alert('Enter your name correctly without numbers');
   } else if (!emailCheckRegex.test(emailInput.value)) {
     alert('Enter your email correctly');
+  } else if (idNumberInput.value.length !== 14) {
+    alert('Enter Your National id number correctly');
   } else if (user21Years > today) {
     alert(
       `Your need to be 21 at least \n You have to wait ${Math.trunc(((user21Years.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 365.25)) * 12)}Months`,
