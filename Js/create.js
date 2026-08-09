@@ -175,6 +175,8 @@ sumbitBtn.addEventListener('click', function (e) {
     };
     accounts.push(newAccount);
     saveAccounts(accounts);
+    alert('You are Gonna Go To login page to go to your account');
+    window.location.href = '../HTMLs/login.html';
   } else {
     alert(`You have to change pin number to a number`);
   }
