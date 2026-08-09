@@ -170,7 +170,7 @@ sumbitBtn.addEventListener('click', function (e) {
       idNumber: `${idNumberInput.value}`,
       movements: [],
       username: `${userName.value}`,
-      pin: `${Number(pinDigits.join())}`,
+      pin: pinDigits.join(),
       movementsDates: [],
     };
     accounts.push(newAccount);
