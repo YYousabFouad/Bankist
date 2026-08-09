@@ -91,7 +91,7 @@ const birthYearInput = document.querySelector('.form-input-birthdate');
 const idNumberInput = document.querySelector('.form-input-IdNumber');
 const idCardInput = document.querySelector('.file-input');
 const checkBoxInput = document.querySelector('.custom-checkbox');
-const sumbitButton = document.querySelector('.btn-primary');
+const sumbitButton = document.querySelector('.btn-primary1');
 const nameCheckRegex = /\d/;
 const emailCheckRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 sumbitButton.addEventListener('click', function (e) {
