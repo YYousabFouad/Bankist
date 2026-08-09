@@ -163,8 +163,17 @@ sumbitButton.addEventListener('click', function (e) {
   }
 });
 
-//==============Back to Personal info===========================
+//=============Sumbit & Create Account==========================
+const pinDigit1 = document.querySelector('.pin-digit1');
+const pinDigit2 = document.querySelector('.pin-digit2');
+const pinDigit3 = document.querySelector('.pin-digit3');
+const pinDigit4 = document.querySelector('.pin-digit4');
+const sumbitBtn = document.querySelector('.btn-primary2');
+sumbitBtn.addEventListener('click', function (e) {
+  e.preventDefault();
+});
 
+//==============Back to Personal info===========================
 const backBtn = document.querySelector('.btn-secondary');
 backBtn.addEventListener('click', function (e) {
   e.preventDefault();
