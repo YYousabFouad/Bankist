@@ -5,8 +5,9 @@
  * Pure logic imported from @/domain, @/storage.
  */
 
-import { validateNationalId, calculateAge } from '@/domain/calculations';
-import { getAccounts, addAccount, findAccount } from '@/storage/account.repository';
+import { validateNationalId, calculateAge } from '../domain/calculations.js';
+import { getAccounts, addAccount, findAccount } from '../storage/account.repository.js';
+import { showFeedback, clearFeedback } from '../utils/feedback.js';
 
 // ================= DOM ELEMENTS =================
 const firstNameInput = document.querySelector('.form-input-firstName');
@@ -22,6 +23,10 @@ const backBtn = document.querySelector('.btn-secondary');
 const numberCheckRegex = /\d/;
 const emailCheckRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let registrationReady = false;
+const registrationFeedback = document.querySelector('[data-feedback="registration"]');
+const setupFeedback = document.querySelector('[data-feedback="setup"]');
+const refuseRegistration = (title, message, suggestion, target = registrationFeedback) =>
+  showFeedback(target, { title, message, suggestion });
 
 // ================= USERNAME GENERATION =================
 function createUserName(firstName, lastName) {
@@ -38,6 +43,7 @@ function createUserName(firstName, lastName) {
 // ================= STEP 1 VALIDATION =================
 sumbitButton.addEventListener('click', function (e) {
   e.preventDefault();
+  clearFeedback(registrationFeedback);
   if (
     !firstNameInput.value ||
     !lastNameInput.value ||
@@ -47,28 +53,26 @@ sumbitButton.addEventListener('click', function (e) {
     idCardInput.files.length === 0 ||
     !checkBoxInput.checked
   ) {
-    alert('Enter the correct Information');
+    refuseRegistration('Some details are missing', 'We could not verify the application because one or more required fields are empty.', 'Complete every field, upload your ID, and accept the terms before continuing.');
   } else if (
     numberCheckRegex.test(firstNameInput.value) ||
     numberCheckRegex.test(lastNameInput.value)
   ) {
-    alert('Enter your name correctly without numbers');
+    refuseRegistration('Check your name', 'Names cannot contain numbers.', 'Enter your first and last name as they appear on your ID.');
   } else if (!emailCheckRegex.test(emailInput.value)) {
-    alert('Enter your email correctly');
+    refuseRegistration('Email address looks incomplete', 'We need a valid email to secure your account and send updates.', 'Use an address in the format name@example.com.');
   } else if (!validateNationalId(idNumberInput.value)) {
-    alert('Enter Your National id number correctly');
+    refuseRegistration('National ID could not be verified', 'The ID number must contain a valid 14-digit Egyptian National ID.', 'Check the number against your ID card and try again.');
   } else if (!Number.isFinite(calculateAge(birthYearInput.value))) {
-    alert('Enter a valid birth date');
+    refuseRegistration('Birth date is missing or invalid', 'We could not calculate your age from the date entered.', 'Choose your full date of birth from the date picker.');
   } else if (calculateAge(birthYearInput.value) < 21) {
-    alert(
-      `You need to be at least 21 years old. You have to wait ${Math.trunc(((21 - calculateAge(birthYearInput.value)) * 12))} months`,
-    );
+    refuseRegistration('You are not eligible yet', 'Applicants need to be at least 21 years old.', `You can apply in about ${Math.trunc((21 - calculateAge(birthYearInput.value)) * 12)} months. Please return once you meet the age requirement.`);
   } else {
     // Validate file types
     let filesValid = true;
     if (idCardInput.files.length === 1) {
       if (idCardInput.files[0].type !== 'application/pdf') {
-        alert('You have to add a pdf file');
+        refuseRegistration('Unsupported document format', 'The selected single file is not a PDF.', 'Upload one PDF, or upload two PNG images showing both sides of your ID.');
         filesValid = false;
       }
     } else if (idCardInput.files.length === 2) {
@@ -76,16 +80,16 @@ sumbitButton.addEventListener('click', function (e) {
         idCardInput.files[0].type !== 'image/png' ||
         idCardInput.files[1].type !== 'image/png'
       ) {
-        alert('You need to add an image please with an extension png');
+        refuseRegistration('We could not read these images', 'When uploading two files, both must be PNG images.', 'Choose two PNG files, one for each side of your ID, or upload a single PDF.');
         filesValid = false;
       }
     } else {
-      alert('The Applicant just needs 1 PDF or 2 PNG files, no more');
+      refuseRegistration('Please review your ID files', 'We accept one PDF or two PNG images.', 'Remove extra files and use one of the supported formats.');
       filesValid = false;
     }
     if (filesValid) {
       registrationReady = true;
-      alert(`Ok ${firstNameInput.value} we gonna navigate you to account setup section`);
+      clearFeedback(setupFeedback);
       document.querySelector('.form-card-first-one').classList.add('hidden');
       document.querySelector('.form-card-second-one').classList.remove('hidden');
       document.querySelector('.step1').classList.remove('step-active');
@@ -98,8 +102,9 @@ sumbitButton.addEventListener('click', function (e) {
 // ================= STEP 2: CREATE ACCOUNT =================
 sumbitBtn.addEventListener('click', function (e) {
   e.preventDefault();
+  clearFeedback(setupFeedback);
   if (!registrationReady) {
-    alert('Complete and validate your personal information first');
+    refuseRegistration('Personal details need attention', 'Account setup is locked until your application details are verified.', 'Return to the first step and complete each required field.', setupFeedback);
     return;
   }
   const userName = document.querySelector('#username');
@@ -128,20 +133,20 @@ sumbitBtn.addEventListener('click', function (e) {
     try {
       addAccount(accounts, newAccount);
     } catch (error) {
-      alert(error.message);
+      refuseRegistration('We could not create your account', error.message, 'Please try again. If this continues, contact support.', setupFeedback);
       createUserName(firstNameInput.value, lastNameInput.value);
       return;
     }
-    alert('You are Gonna Go To login page to go to your account');
     window.location.href = '../HTMLs/login.html';
   } else {
-    alert('Enter all four PIN digits');
+    refuseRegistration('Your PIN is incomplete', 'A secure PIN must contain exactly four digits.', 'Fill all four boxes using numbers from 0 to 9.', setupFeedback);
   }
 });
 
 // ================= BACK BUTTON =================
 backBtn.addEventListener('click', function (e) {
   e.preventDefault();
+  clearFeedback(setupFeedback);
   registrationReady = false;
   document.querySelector('.form-card-first-one').classList.remove('hidden');
   document.querySelector('.form-card-second-one').classList.add('hidden');

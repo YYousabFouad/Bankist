@@ -479,6 +479,24 @@ h2 {
   color: var(--c-teal);
 }
 
+.feedback {
+  display: grid;
+  gap: 3px;
+  margin: 0.8rem 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(179, 63, 55, 0.28);
+  border-left: 4px solid #b33f37;
+  border-radius: 1rem;
+  background: #fff8f6;
+  color: #4f2926;
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+.feedback[hidden] { display: none; }
+.feedback strong { font-size: 1.3rem; }
+.feedback__suggestion { color: #72514d; }
+.feedback--success { border-color: rgba(0, 130, 90, 0.25); border-left-color: #00825a; background: #f1fbf7; color: #174b3a; }
+
 /* KEYFRAME ANIMATIONS */
 @keyframes fadeInDown {
   from {

@@ -11,9 +11,10 @@ import {
   calculatePayments,
   calculateInterest,
   canRequestLoan,
-} from '@/domain/calculations';
-import { formatDate, formatCurrency } from '@/utils/formatters';
-import { getAccounts, saveAccounts, findAccount } from '@/storage/account.repository';
+} from '../domain/calculations.js';
+import { formatDate, formatCurrency } from '../utils/formatters.js';
+import { getAccounts, saveAccounts, findAccount } from '../storage/account.repository.js';
+import { showFeedback, clearFeedback } from '../utils/feedback.js';
 
 // ================= STATE =================
 let accounts = getAccounts();
@@ -46,6 +47,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 const coinHeroEl = document.getElementById('coinHero');
+const feedbackFor = name => document.querySelector(`[data-feedback="${name}"]`);
+const refuse = (name, title, message, suggestion) =>
+  showFeedback(feedbackFor(name), { title, message, suggestion });
 
 // ================= UI RENDERING =================
 const displayMovements = function (acc, sort = false) {
@@ -142,6 +146,7 @@ if (coin) {
 // ================= EVENT LISTENERS =================
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
+  clearFeedback(feedbackFor('login'));
   currentUser = findAccount(accounts, inputLoginUsername.value);
   if (currentUser?.pin === +inputLoginPin.value) {
     // Hide coin hero and cancel animation
@@ -176,20 +181,21 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.transform = 'translateY(0)';
   } else {
     inputLoginPin.value = '';
-    alert('Wrong username or PIN!');
+    refuse('login', 'We could not sign you in', 'The username or PIN does not match an account.', 'Check both details and try again. Your PIN field has been cleared for security.');
   }
 });
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  if (!currentUser) return alert('Sign in before making a transfer.');
-  if (isProcessing) return;
+  clearFeedback(feedbackFor('transfer'));
+  if (!currentUser) return refuse('transfer', 'Sign in required', 'Transfers are available after you sign in.', 'Enter your account username and PIN above, then retry.');
+  if (isProcessing) return refuse('transfer', 'Another transaction is processing', 'Please wait while your previous request finishes.', 'Retry the transfer in a moment.');
   const amount = +inputTransferAmount.value;
   const receiverAcc = findAccount(accounts, inputTransferTo.value);
   if (!inputTransferTo.value || !receiverAcc || !amount || receiverAcc.username === currentUser.username) {
-    alert(`${currentUser.owner.split(' ')[0]}, You entered wrong data !! \nTry Again `);
+    refuse('transfer', 'Transfer details need a check', 'The recipient account was not found, the details are incomplete, or you selected your own account.', 'Enter the recipient’s username exactly as shown on their account and choose a different recipient.');
   } else if (amount <= 0 || currentUser.balance < amount) {
-    alert('Please enter a correct amount');
+    refuse('transfer', amount <= 0 ? 'Enter a valid amount' : 'Insufficient available balance', amount <= 0 ? 'Transfer amounts must be greater than zero.' : `Your available balance is ${formatCurrency(currentUser.locale, currentUser.currency, currentUser.balance)}.`, amount <= 0 ? 'Enter a positive amount and try again.' : 'Reduce the transfer amount or add funds before retrying.');
   } else if (receiverAcc) {
     isProcessing = true;
     setTimeout(() => {
@@ -209,8 +215,9 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  if (!currentUser) return alert('Sign in before requesting a loan.');
-  if (isProcessing) return;
+  clearFeedback(feedbackFor('loan'));
+  if (!currentUser) return refuse('loan', 'Sign in required', 'Loan requests are available after you sign in.', 'Enter your account username and PIN above, then retry.');
+  if (isProcessing) return refuse('loan', 'Another transaction is processing', 'Please wait while your previous request finishes.', 'Retry the loan request in a moment.');
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && canRequestLoan(currentUser.movements, amount)) {
     isProcessing = true;
@@ -224,14 +231,16 @@ btnLoan.addEventListener('click', function (e) {
       isProcessing = false;
     }, 2000);
   } else {
-    alert('Loan request denied.');
+    const amount = Math.floor(inputLoanAmount.value);
+    refuse('loan', 'This loan cannot be approved yet', amount > 0 ? 'To qualify, at least one previous deposit must be 10% or more of the requested loan.' : 'Enter a loan amount greater than zero.', amount > 0 ? 'Try a smaller amount, or build your deposit history and apply again.' : 'Enter a positive whole number and try again.');
   }
   inputLoanAmount.value = '';
 });
 
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
-  if (!currentUser) return alert('Sign in before closing an account.');
+  clearFeedback(feedbackFor('close'));
+  if (!currentUser) return refuse('close', 'Sign in required', 'You need an active session to close your account.', 'Sign in above, then confirm your account details here.');
   if (currentUser.username === inputCloseUsername.value && currentUser.pin === +inputClosePin.value) {
     const index = accounts.findIndex(acc => acc.username === currentUser.username);
     accounts.splice(index, 1);
@@ -239,7 +248,7 @@ btnClose.addEventListener('click', function (e) {
     window.location.replace('../HTMLs/index.html');
     currentUser = null;
   } else {
-    alert('Enter the Correct Credentials');
+    refuse('close', 'We could not verify account ownership', 'The username or PIN entered does not match your signed-in account.', 'Re-enter the username and PIN linked to this account.');
   }
   inputCloseUsername.value = inputClosePin.value = '';
 });
