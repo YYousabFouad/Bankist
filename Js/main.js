@@ -44,8 +44,21 @@ backToTopBtn.addEventListener('click', () => {
   });
 });
 
-// Listen to scroll events
-window.addEventListener('scroll', updateScrollProgress);
+// Listen to scroll events (rAF-throttled, passive)
+let ticking = false;
+window.addEventListener(
+  'scroll',
+  () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateScrollProgress();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  },
+  { passive: true },
+);
 //================Form===================
 
 const nameCheckRegex = /\d/;

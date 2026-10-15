@@ -70,22 +70,27 @@ const displayMovements = function (acc, sort) {
       (a, b) =>
         new Date(a.movementDate).getTime() - new Date(b.movementDate).getTime(),
     );
-  // const movs = sort
-  //   ? acc.movements.slice().sort((a, b) => a - b)
-  //   : acc.movements;
-  combinedDatemov.forEach((obj, i) => {
-    const { movement, movementDate } = obj;
-    const type = movement > 0 ? 'deposit' : 'withdrawal';
-    const date = new Date(movementDate);
-    const displayDate = formatDate(date, currentUser.locale);
-    const formattedMov = formattedCurrency(acc.locale, acc.currency, movement);
-    const html = `<div class="movements__row">
+  // Batch all rows into a single string, then update DOM once
+  const html = combinedDatemov
+    .map((obj, i) => {
+      const { movement, movementDate } = obj;
+      const type = movement > 0 ? 'deposit' : 'withdrawal';
+      const date = new Date(movementDate);
+      const displayDate = formatDate(date, currentUser.locale);
+      const formattedMov = formattedCurrency(
+        acc.locale,
+        acc.currency,
+        movement,
+      );
+      return `
+        <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
           <div class="movements__value">${formattedMov}</div>
         </div>`;
-    containerMovements.insertAdjacentHTML('afterbegin', html);
-  });
+    })
+    .join('');
+  containerMovements.innerHTML = html;
   saveAccounts(accounts);
 };
 
@@ -165,6 +170,7 @@ const countDownTimer = function () {
   return timer;
 };
 let currentUser, timer;
+let isProcessing = false; // Transaction submit lock
 
 // ================= EVENT LISTENERS =================
 
@@ -175,9 +181,13 @@ btnLogin.addEventListener('click', function (e) {
   currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
 
   if (currentUser?.pin === +inputLoginPin.value) {
-    // 1. Hide the 3D coin bouncing hero area
+    // 1. Hide the 3D coin bouncing hero area and stop the animation loop
     if (coinHeroEl) {
       coinHeroEl.classList.add('hidden');
+    }
+    if (coinAnimId) {
+      cancelAnimationFrame(coinAnimId);
+      coinAnimId = null;
     }
 
     //2. save the current date
@@ -227,6 +237,7 @@ btnLogin.addEventListener('click', function (e) {
 // Implement Transfers
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
+  if (isProcessing) return; // Guard against double-submit
   const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value,
@@ -244,6 +255,7 @@ btnTransfer.addEventListener('click', function (e) {
   } else if (amount <= 0 || currentUser.balance < amount) {
     alert('Please enter a correct amount');
   } else if (receiverAcc) {
+    isProcessing = true;
     setTimeout(() => {
       currentUser.movements.push(-amount);
       receiverAcc.movements.push(amount);
@@ -258,6 +270,7 @@ btnTransfer.addEventListener('click', function (e) {
       //reset timer
       clearInterval(timer);
       timer = countDownTimer();
+      isProcessing = false;
     }, 2000);
   }
 });
@@ -265,8 +278,10 @@ btnTransfer.addEventListener('click', function (e) {
 // Loan amounts
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
+  if (isProcessing) return; // Guard against double-submit
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
+    isProcessing = true;
     setTimeout(() => {
       currentUser.movements.push(amount);
       // add loan date
@@ -278,6 +293,7 @@ btnLoan.addEventListener('click', function (e) {
       //reset timer
       clearInterval(timer);
       timer = countDownTimer();
+      isProcessing = false;
     }, 2000);
   } else {
     alert('Loan request denied.');
@@ -316,6 +332,7 @@ btnSort.addEventListener('click', function (e) {
 
 // Bouncing Coin Animation
 const coin = document.getElementById('bouncing-coin');
+let coinAnimId;
 
 if (coin) {
   let x = Math.random() * (window.innerWidth - 60);
@@ -341,7 +358,7 @@ if (coin) {
 
     coin.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
-    requestAnimationFrame(animateCoin);
+    coinAnimId = requestAnimationFrame(animateCoin);
   }
 
   animateCoin();
